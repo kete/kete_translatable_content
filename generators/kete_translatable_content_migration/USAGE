@@ -1,0 +1,2 @@
+Description:
+	Generates the migration necessary to track locale and original locale needed by the mongo_translatable functionality.
