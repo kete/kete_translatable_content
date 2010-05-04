@@ -2,10 +2,7 @@ require 'mongo_translatable'
 require 'kete_translatable_content'
 require 'kete_translatable_content_helper'
 
-config.to_prepare do
-  ApplicationHelper.send(:include, TranslatablesHelper)
-  ApplicationHelper.send(:include, KeteTranslatableContentHelper)
-end
+ActionController::Base.send(:helper, KeteTranslatableContentHelper)
 
 # precedence over a plugin or gem's (i.e. an engine's) app/views
 # this is the way to go in most cases,
