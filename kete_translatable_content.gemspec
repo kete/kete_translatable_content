@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Walter McGinnis"]
-  s.date = %q{2010-05-03}
+  s.date = %q{2010-05-04}
   s.description = %q{Kete Translatable Content is a gem that is an add-on for Kete web applications that takes advantage of the mongo_translatable gem functionality. As you would expect, you use it to add the ability to translate content in your Kete web site.}
   s.email = %q{walter@katipo.co.nz}
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "app/views/topics/_content_wrapper_start.rhtml",
      "config/routes.rb",
+     "config/translatables.yml",
      "generators/kete_translatable_content_migration/USAGE",
      "generators/kete_translatable_content_migration/kete_translatable_content_migration_generator.rb",
      "generators/kete_translatable_content_tests/USAGE",
@@ -34,8 +35,10 @@ Gem::Specification.new do |s|
      "generators/kete_translatable_content_tests/templates/kete_translatable_content_helper_test.rb",
      "generators/kete_translatable_content_tests/templates/kete_translatable_content_migration_test.rb",
      "generators/kete_translatable_content_tests/templates/kete_translations_test.rb",
+     "kete_translatable_content.gemspec",
      "lib/configure_kete_content_translation.rb",
      "lib/kete_translatable_content.rb",
+     "lib/kete_translatable_content_helper.rb",
      "lib/tasks/kete_translatable_content.rake",
      "rails/init.rb"
   ]

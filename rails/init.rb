@@ -1,10 +1,10 @@
-# require 'kete_translatable_content'
+require 'kete_translatable_content'
 
 config.to_prepare do
   ApplicationHelper.send(:include, TranslatablesHelper)
+  ApplicationHelper.send(:include, KeteTranslatableContentHelper)
 end 
 
-# the normal precedence is for the app's app/views templated to take
 # precedence over a plugin or gem's (i.e. an engine's) app/views
 # this is the way to go in most cases,
 # but in our case we want to override the app's view.

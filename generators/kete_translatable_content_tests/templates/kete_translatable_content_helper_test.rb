@@ -7,5 +7,8 @@ class KeteTranslatableContentHelperTest < ActionView::TestCase
     should "include TranslatablesHelper#needed_in_locales_for" do 
       assert defined?(:needed_in_locales_for)
     end
+    should "include KeteTranslatableContentHelper#kete_translatable_content?" do 
+      assert defined?(:kete_translatable_content?)
+    end
   end
 end

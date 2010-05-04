@@ -1,3 +1,4 @@
-# require 'mongo_translatable'
+require 'mongo_translatable'
 
-# ApplicationController.helper(TranslatablesHelper)
+TRANSLATABLES = YAML.load(IO.read(File.join(File.dirname(__FILE__), '../config/translatables.yml')))
+

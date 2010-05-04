@@ -26,7 +26,9 @@ if IS_CONFIGURED
 
    include ConfigureKeteContentTranslation
 
-   extend_with_translatable_attributes(Basket, :name)
+  TRANSLATABLES.each do |name, spec_hash|
+    extend_with_translatable_attributes(name.camelize.constantize, spec_hash['translatable_attributes'])
+  end
 end
 
 # name your MongoDB database

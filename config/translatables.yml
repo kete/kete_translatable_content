@@ -1,0 +1,5 @@
+basket:
+  translatable_attributes: [:name]
+  views: ['edit']
+
+    
