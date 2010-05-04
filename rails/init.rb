@@ -5,7 +5,7 @@ require 'kete_translatable_content_helper'
 config.to_prepare do
   if IS_CONFIGURED
     TRANSLATABLES.each do |name, spec_hash|
-      name.camelize.constantize.send(:mongo_translate, spec_hash['translatable_attributes'])
+      name.camelize.constantize.send(:mongo_translate, *spec_hash['translatable_attributes'])
     end
 
     ApplicationController.class_eval do
