@@ -1,5 +1,12 @@
 basket:
   translatable_attributes: [:name]
   views: ['edit']
-
-    
+topic_type:
+  translatable_attributes: [:name, :description]
+  views: ['edit']
+search_source:
+  translatable_attributes: [:title, :source_credit]
+  views: ['edit']
+license:
+  translatable_attributes: [:name, :description]
+  views: ['edit']
