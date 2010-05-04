@@ -6,6 +6,10 @@ Kete Translatable Content is a gem that is an add-on for Kete web applications t
 
 Currently only tested against Rails 2.3.5.  When Kete moves to Rails 3, this gem will be updated to.
 
+First install the needed things:
+
+gem install mongo_translatable kete_translatable_content
+
 After installing the gem do the following to add kete_translatable_content to you app:
 
 in config/environment.rb:
@@ -14,6 +18,7 @@ in config/environment.rb:
 Rails::Initializer.run do |config|
 ...
 # add the ability to translate Kete content, by declaring dependency on the gem
+config.gem "mongo_translatable"
 config.gem "kete_translatable_content"
 ...
 end
@@ -29,6 +34,10 @@ if IS_CONFIGURED
   TRANSLATABLES.each do |name, spec_hash|
     extend_with_translatable_attributes(name.camelize.constantize, spec_hash['translatable_attributes'])
   end
+  require 'configure_kete_content_translation'
+  include ConfigureKeteContentTranslation
+  extend_with_translatable_attributes(Basket, :name)
+  require 'reload_baskets_per_request'
 end
 
 # name your MongoDB database
@@ -36,7 +45,7 @@ MongoMapper.database = 'your_app'
 
 Now you need to run the migration generator to add the columns that kete_translatable_content needs to work. Do this in your Kete application's root directory.
 
-$ script/generate kete_translatable_content_migration 
+$ script/generate kete_translatable_content_migration
 $ rake db:migrate # add environment if necessary, i.e. rake db:migrate RAILS_ENV=production
 
 It's a good idea to generate the tests and run them before proceeding:
@@ -64,7 +73,7 @@ Your tests should also now include testing for the kete_translatable_content add
 
 
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
