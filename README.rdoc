@@ -12,21 +12,8 @@ First install the needed things:
 
 After installing the gem do the following to add kete_translatable_content to you app:
 
-in config/environment.rb:
+At the bottom of config/environment.rb:
 
-  ...
-  Rails::Initializer.run do |config|
-    ...
-    # add the ability to translate Kete content, by declaring dependency on the gem
-    config.gem "mongo_translatable"
-    config.gem "kete_translatable_content"
-    ...
-  end
-
-  # Configure Kete Content Translation
-  # This needs to run after the initalizer.run block.
-  # It's best if it is the last thing in the the environment.rb file.
-  require 'configure_kete_content_translation' if IS_CONFIGURED
   MongoMapper.database = 'your_app'
 
 Now you need to run the migration generator to add the columns that kete_translatable_content needs to work. Do this in your Kete application's root directory.
