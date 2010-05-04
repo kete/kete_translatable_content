@@ -1,3 +1,5 @@
+require 'kete_translatable_content'
+
 module KeteTranslatableContentHelper
   unless included_modules.include? KeteTranslatableContentHelper
     def kete_translatable_content?

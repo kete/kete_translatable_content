@@ -1,5 +1,6 @@
 require 'mongo_translatable'
 require 'kete_translatable_content'
+require 'kete_translatable_content_helper'
 
 config.to_prepare do
   ApplicationHelper.send(:include, TranslatablesHelper)
