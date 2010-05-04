@@ -14,8 +14,7 @@ Gem::Specification.new do |s|
   s.email = %q{walter@katipo.co.nz}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc",
-     "README.rdoc.orig"
+     "README.rdoc"
   ]
   s.files = [
     ".document",
@@ -29,6 +28,7 @@ Gem::Specification.new do |s|
      "config/translatables.yml",
      "generators/kete_translatable_content_migration/USAGE",
      "generators/kete_translatable_content_migration/kete_translatable_content_migration_generator.rb",
+     "generators/kete_translatable_content_migration/templates/migration.rb",
      "generators/kete_translatable_content_tests/USAGE",
      "generators/kete_translatable_content_tests/kete_translatable_content_tests_generator.rb",
      "generators/kete_translatable_content_tests/templates/configure_kete_content_translation_controller_and_routes_test.rb",
@@ -37,17 +37,14 @@ Gem::Specification.new do |s|
      "generators/kete_translatable_content_tests/templates/kete_translatable_content_migration_test.rb",
      "generators/kete_translatable_content_tests/templates/kete_translations_test.rb",
      "kete_translatable_content.gemspec",
-     "lib/configure_kete_content_translation.rb",
      "lib/kete_translatable_content.rb",
      "lib/kete_translatable_content_helper.rb",
-     "lib/reload_baskets_per_request.rb",
-     "lib/tasks/kete_translatable_content.rake",
      "rails/init.rb"
   ]
   s.homepage = %q{http://github.com/kete/kete_translatable_content}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{An add-on to the Kete application to provide content translations.}
 
   if s.respond_to? :specification_version then
