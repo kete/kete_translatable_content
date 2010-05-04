@@ -27,16 +27,11 @@ end
 # This needs to run after the initalizer.run block.
 # It's best if it is the last thing in the the environment.rb file.
 if IS_CONFIGURED
-   require 'configure_kete_content_translation'
-
-   include ConfigureKeteContentTranslation
-
+  require 'configure_kete_content_translation'
+  include ConfigureKeteContentTranslation
   TRANSLATABLES.each do |name, spec_hash|
     extend_with_translatable_attributes(name.camelize.constantize, spec_hash['translatable_attributes'])
   end
-  require 'configure_kete_content_translation'
-  include ConfigureKeteContentTranslation
-  extend_with_translatable_attributes(Basket, :name)
   require 'reload_baskets_per_request'
 end
 

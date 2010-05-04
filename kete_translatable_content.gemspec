@@ -14,7 +14,8 @@ Gem::Specification.new do |s|
   s.email = %q{walter@katipo.co.nz}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+     "README.rdoc",
+     "README.rdoc.orig"
   ]
   s.files = [
     ".document",
@@ -39,6 +40,7 @@ Gem::Specification.new do |s|
      "lib/configure_kete_content_translation.rb",
      "lib/kete_translatable_content.rb",
      "lib/kete_translatable_content_helper.rb",
+     "lib/reload_baskets_per_request.rb",
      "lib/tasks/kete_translatable_content.rake",
      "rails/init.rb"
   ]
