@@ -48,12 +48,7 @@ It's a good idea to generate the tests and run them before proceeding:
   ...
   $ ruby integration/kete_translations_test.rb
 
-If the tests run ok and you are ready to start playing with the functionality from the web interface,
-you'll probably want to set legacy data's locale appropriately:
-
-  $ rake kete_translatable_content:update_with_default_locale # usual enviroment setting rules here, too
-
-Restart your application and it should be ready to use.
+If the tests run ok, restart your application and it should be ready to use from the web interface.
 
 Your tests should also now include testing for the kete_translatable_content add-on.
 
