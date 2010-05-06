@@ -18,14 +18,29 @@ config.to_prepare do
     end
 
     ApplicationController.class_eval do
-      before_filter :reload_standard_baskets
       helper KeteTranslatableContentHelper
+
+      before_filter :reload_standard_baskets
       def reload_standard_baskets
         Rails.logger.info "[Kete Translatable Content]: Reloading Standard Baskets to be locale aware"
         @site_basket.reload
         @help_basket.reload
         @about_basket.reload
         @documentation_basket.reload
+      end
+
+      around_filter :redirect_unless_editing_original_locale
+      def redirect_unless_editing_original_locale
+        if params[:controller] == 'baskets' && params[:action] == 'edit'
+          appropriate_basket # set @basket
+          if I18n.locale.to_sym != @basket.original_locale.to_sym
+            flash[:error] = I18n.t('kete_translatable.only_edit_original_locale')
+            redirect_to params.merge(:locale => @basket.original_locale)
+            return false
+          end
+        end
+
+        yield
       end
     end
   end
@@ -40,3 +55,5 @@ kete_translatable_content_views_dir = File.join(directory, 'app/views')
 ActionController::Base.view_paths.delete kete_translatable_content_views_dir
 # add it to the front of array
 ActionController::Base.view_paths.unshift kete_translatable_content_views_dir
+# load our locales
+I18n.load_path += Dir[ File.join(File.dirname(__FILE__), '..', 'config', 'locales', '*.{rb,yml}') ]
