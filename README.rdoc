@@ -12,6 +12,11 @@ First install the needed things:
 
 After installing the gem do the following to add kete_translatable_content to you app:
 
+In the Rails::Initializer.run config block  config/environment.rb:
+
+  config.gem "mongo_translatable"
+  config.gem "kete_translatable_content"
+
 At the bottom of config/environment.rb:
 
   MongoMapper.database = 'your_app'

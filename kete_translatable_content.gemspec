@@ -9,12 +9,13 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Walter McGinnis"]
-  s.date = %q{2010-05-04}
+  s.date = %q{2010-05-06}
   s.description = %q{Kete Translatable Content is a gem that is an add-on for Kete web applications that takes advantage of the mongo_translatable gem functionality. As you would expect, you use it to add the ability to translate content in your Kete web site.}
   s.email = %q{walter@katipo.co.nz}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+     "README.rdoc",
+     "README.rdoc.orig"
   ]
   s.files = [
     ".document",
@@ -44,7 +45,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/kete/kete_translatable_content}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.5}
   s.summary = %q{An add-on to the Kete application to provide content translations.}
 
   if s.respond_to? :specification_version then

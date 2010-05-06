@@ -3,9 +3,18 @@ require 'kete_translatable_content'
 require 'kete_translatable_content_helper'
 
 config.to_prepare do
-  if IS_CONFIGURED
+  kete_translatable_content_ready = true
+  TRANSLATABLES.keys.each do |name|
+    translatable = name.camelize.constantize.send(:new)
+    kete_translatable_content_ready = translatable.respond_to?(:original_locale)
+    break if kete_translatable_content_ready == false
+  end
+
+  if IS_CONFIGURED && kete_translatable_content_ready
     TRANSLATABLES.each do |name, spec_hash|
-      name.camelize.constantize.send(:mongo_translate, *spec_hash['translatable_attributes'])
+      args = [:mongo_translate, *spec_hash['translatable_attributes']]
+      args << { :redefine_find => spec_hash['redefine_find'] } unless spec_hash['redefine_hash'].nil?
+      name.camelize.constantize.send(*args)
     end
 
     ApplicationController.class_eval do

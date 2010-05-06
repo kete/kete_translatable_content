@@ -10,3 +10,7 @@ search_source:
 license:
   translatable_attributes: [:name, :description]
   views: ['edit']
+extended_field:
+  translatable_attributes: [:label, :example]
+  views: ['edit']
+  redefine_find: false
