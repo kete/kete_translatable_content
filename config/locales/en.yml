@@ -1,3 +1,22 @@
 en:
+  baskets:
+    form:
+      name: "Name:"
+  extended_fields:
+    form:
+      example: "Example:"
+      label: "Label:"
   kete_translatable:
     only_edit_original_locale: "You can only edit the original locale."
+  licenses:
+    form:
+      description: "Description:"
+      name: "Name:"
+  search_sources:
+    form:
+      title: "Title:"
+      source_credit: "Source Credit:"
+  topic_types:
+    form:
+      description: "Description:"
+      name: "Name:"
