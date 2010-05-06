@@ -1,0 +1,8 @@
+<% if kete_translatable_content? -%>
+  <div id="translations-links">
+    <%= available_in_locales_for(@record) -%>
+    <%= needed_in_locales_for(@record, :lightbox => true) -%>
+  </div>
+<% end -%>
+
+<%= render :super %>

@@ -6,11 +6,11 @@ topic_type:
   views: ['edit']
 search_source:
   translatable_attributes: [:title, :source_credit]
-  views: ['edit']
+  views: ['edit', 'show']
 license:
   translatable_attributes: [:name, :description]
-  views: ['edit']
+  views: ['edit', 'show']
 extended_field:
   translatable_attributes: [:label, :example]
-  views: ['edit']
+  views: ['edit', 'show']
   redefine_find: false
