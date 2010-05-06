@@ -1,12 +1,24 @@
 # -*- coding: utf-8 -*-
 require File.dirname(__FILE__) + '/integration_test_helper'
 
+def translate_for_locales(record, *locales)
+  locales.each do |locale|
+    visit "/en/site/#{record.class.name.pluralize.downcase}/#{record.id}/translations/new?to_locale=#{locale}"
+    click_button 'Create'
+    assert_contain 'Translation was successfully created.'
+  end
+end
+
 class KeteTranslationsTest < ActionController::IntegrationTest
+
   context "A translatable basket" do
+
     include Webrat::HaveTagMatcher
+
     setup do
       add_admin_as_super_user
       login_as('admin')
+
       # create_new_basket is a method in Kete's integration helpers to create
       # the basket, and remove it when tests are run (so each test has a clean
       # environment)
@@ -22,7 +34,7 @@ class KeteTranslationsTest < ActionController::IntegrationTest
     context "that has been previously translated" do
 
       setup do
-        translate_basket_for_locales(@basket, [:zh])
+        translate_for_locales(@basket, :zh)
       end
 
       should "have locales that have been translated on its show page" do
@@ -32,5 +44,7 @@ class KeteTranslationsTest < ActionController::IntegrationTest
       end
 
     end
+
   end
+
 end
