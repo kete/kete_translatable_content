@@ -20,6 +20,19 @@ config.to_prepare do
       name.camelize.constantize.send(*args)
     end
 
+    # precedence over a plugin or gem's (i.e. an engine's) app/views
+    # this is the way to go in most cases,
+    # but in our case we want to override the app's view.
+    # so we pop off our gem's app/views directory and put it at the front
+    kete_translatable_content_views_dir = File.join(directory, 'app/views')
+    # drop it from it's existing location if it exists
+    ActionController::Base.view_paths.delete kete_translatable_content_views_dir
+    # add it to the front of array
+    ActionController::Base.view_paths.unshift kete_translatable_content_views_dir
+
+    # load our locales
+    I18n.load_path += Dir[ File.join(File.dirname(__FILE__), '..', 'config', 'locales', '*.{rb,yml}') ]
+
     ApplicationController.class_eval do
       helper KeteTranslatableContentHelper
 
@@ -48,15 +61,3 @@ config.to_prepare do
     end
   end
 end
-
-# precedence over a plugin or gem's (i.e. an engine's) app/views
-# this is the way to go in most cases,
-# but in our case we want to override the app's view.
-# so we pop off our gem's app/views directory and put it at the front
-kete_translatable_content_views_dir = File.join(directory, 'app/views')
-# drop it from it's existing location if it exists
-ActionController::Base.view_paths.delete kete_translatable_content_views_dir
-# add it to the front of array
-ActionController::Base.view_paths.unshift kete_translatable_content_views_dir
-# load our locales
-I18n.load_path += Dir[ File.join(File.dirname(__FILE__), '..', 'config', 'locales', '*.{rb,yml}') ]
