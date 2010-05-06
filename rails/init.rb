@@ -5,8 +5,8 @@ require 'kete_translatable_content_helper'
 config.to_prepare do
   kete_translatable_content_ready = true
   TRANSLATABLES.keys.each do |name|
-    translatable = name.camelize.constantize.send(:new)
-    kete_translatable_content_ready = translatable.respond_to?(:original_locale)
+    translatable = name.camelize.constantize.send(:new) rescue false
+    kete_translatable_content_ready = translatable && translatable.respond_to?(:original_locale)
     break if kete_translatable_content_ready == false
   end
 
