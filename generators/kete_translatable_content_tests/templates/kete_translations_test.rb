@@ -5,6 +5,8 @@ class KeteTranslationsTest < ActionController::IntegrationTest
   context "A translatable basket" do
     include Webrat::HaveTagMatcher
     setup do
+      add_admin_as_super_user
+      login_as('admin')
       # create_new_basket is a method in Kete's integration helpers to create
       # the basket, and remove it when tests are run (so each test has a clean
       # environment)

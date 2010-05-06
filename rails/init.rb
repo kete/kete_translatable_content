@@ -10,7 +10,10 @@ config.to_prepare do
     break if kete_translatable_content_ready == false
   end
 
-  if IS_CONFIGURED && kete_translatable_content_ready
+  # In development/production, we want to only setup stuff if IS_CONFIGURED is true
+  # In test mode however, we always want to have it, since IS_CONFIGURED won't be true
+  # at this stage, but it will be changed to true after Rails initializes.
+  if (IS_CONFIGURED || Rails.env.test?) && kete_translatable_content_ready
     TRANSLATABLES.each do |name, spec_hash|
       args = [:mongo_translate, *spec_hash['translatable_attributes']]
       args << { :redefine_find => spec_hash['redefine_find'] } unless spec_hash['redefine_hash'].nil?
