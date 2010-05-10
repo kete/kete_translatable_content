@@ -39,8 +39,13 @@ config.to_prepare do
         translatable_controllers.include?(params[:controller]) &&
           TRANSLATABLES[params[:controller].singularize]['views'].include?(params[:action])
       end
-
       helper_method :kete_translatable_content?
+
+      def current_translatable_record
+        key = params[:controller].singularize
+        instance_variable_get('@' + key) || @item || @record || key.camelize.constantize.find(params[:id])
+      end
+      helper_method :current_translatable_record
 
       before_filter :reload_standard_baskets
       def reload_standard_baskets
@@ -53,11 +58,8 @@ config.to_prepare do
 
       around_filter :redirect_unless_editing_original_locale
       def redirect_unless_editing_original_locale
-
         if kete_translatable_content? && params[:action] == 'edit'
-          key = params[:controller].singularize
-          translated = instance_variable_get('@' + key) || @item || key.camelize.constantize.find(params[:id])
-
+          translated = current_translatable_record
           if I18n.locale.to_sym != translated.original_locale.to_sym
             flash[:error] = I18n.t('kete_translatable.only_edit_original_locale')
             redirect_to params.merge(:locale => translated.original_locale)
