@@ -68,8 +68,8 @@ config.to_prepare do
         yield
       end
 
-      # override mongo_translatable's translations_controller_helper locally
-      def target_action(options)
+      # override mongo_translatable's target_action locally
+      def target_action(options = {})
         translated = @translated || @translatable
         # relies on first view defined in TRANSLATABLES for a key
         # being the redirect to action
@@ -77,18 +77,27 @@ config.to_prepare do
         options.delete(:action) || TRANSLATABLES[key]['views'].first
       end
 
+      # override mongo_translatable's target_locale locally
+      # because we only allow editing of the original locale (see redirect_unless_editing_original_locale)
+      # make sure we redirect to a locale the user has access to after translations are created or saved
+      def target_locale(options = {})
+        translated = @translated || @translatable
+        override_locale = translated.original_locale if target_action.to_sym == :edit
+        override_locale || options.delete(:action) || (@translation.locale if @translation) || I18n.locale
+      end
+
     end
 
     # we only override specific extended field uses for translation
     # rather than overriding find
-    ExtendedFieldsHelper.module_eval do 
+    ExtendedFieldsHelper.module_eval do
       def extended_field_example(extended_field)
         translated_example = extended_field.example_translation_for(I18n.locale) || extended_field.example
         h(translated_example)
       end
     end
 
-    ApplicationHelper.module_eval do 
+    ApplicationHelper.module_eval do
       def display_label_for(field_or_choice)
         translated_label = field_or_choice.label_translation_for(I18n.locale) || field_or_choice.label
       end
