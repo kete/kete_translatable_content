@@ -1,6 +1,7 @@
 require 'mongo_translatable'
 require 'kete_translatable_content'
 require 'kete_translatable_content_helper'
+# require 'translatable_content'
 
 config.to_prepare do
   kete_translatable_content_ready = true
@@ -58,6 +59,52 @@ config.to_prepare do
 
         yield
       end
+
+      # override mongo_translatable's translations_controller_helper locally
+      def target_action(options)
+        translated = @translated || @translatable
+        # relies on first view defined in TRANSLATABLES for a key
+        # being the redirect to action
+        key = translated.class.name.tableize.singularize
+        options.delete(:action) || TRANSLATABLES[key]['views'].first
+      end
+
     end
+
+    # we only override specific extended field uses for translation
+    # rather than overriding find
+    ExtendedFieldsHelper.module_eval do 
+      def extended_field_example(extended_field)
+        translated_example = extended_field.example_translation_for(I18n.locale) || extended_field.example
+        h(translated_example)
+      end
+    end
+
+    ApplicationHelper.module_eval do 
+      def display_label_for(field_or_choice)
+        translated_label = field_or_choice.label_translation_for(I18n.locale) || field_or_choice.label
+      end
+    end
+
+    unless Kete.extensions[:blocks]
+      Kete.extensions[:blocks] = { :basket => Array.new, :user => Array.new }
+    end
+
+    # TODO: DRY this up
+    extension_block = Proc.new { require 'translatable_content/extensions/basket' }
+
+    unless Kete.extensions[:blocks][:basket]
+      Kete.extensions[:blocks][:basket] = Array.new
+    end
+
+    Kete.extensions[:blocks][:basket] << extension_block
+
+    unless Kete.extensions[:blocks][:user]
+      Kete.extensions[:blocks][:user] = Array.new
+    end
+
+    extension_block_user = Proc.new { require 'translatable_content/extensions/user' }
+
+    Kete.extensions[:blocks][:user] << extension_block_user
   end
 end
