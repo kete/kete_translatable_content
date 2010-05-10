@@ -1,6 +1,5 @@
 require 'mongo_translatable'
 require 'kete_translatable_content'
-require 'kete_translatable_content_helper'
 # require 'translatable_content'
 
 config.to_prepare do
@@ -35,7 +34,13 @@ config.to_prepare do
     I18n.load_path += Dir[ File.join(File.dirname(__FILE__), '..', 'config', 'locales', '*.{rb,yml}') ]
 
     ApplicationController.class_eval do
-      helper KeteTranslatableContentHelper
+      def kete_translatable_content?
+        translatable_controllers = TRANSLATABLES.keys.collect(&:pluralize)
+        translatable_controllers.include?(params[:controller]) &&
+          TRANSLATABLES[params[:controller].singularize]['views'].include?(params[:action])
+      end
+
+      helper_method :kete_translatable_content?
 
       before_filter :reload_standard_baskets
       def reload_standard_baskets
@@ -48,11 +53,14 @@ config.to_prepare do
 
       around_filter :redirect_unless_editing_original_locale
       def redirect_unless_editing_original_locale
-        if params[:controller] == 'baskets' && params[:action] == 'edit'
-          appropriate_basket # set @basket
-          if I18n.locale.to_sym != @basket.original_locale.to_sym
+
+        if kete_translatable_content? && params[:action] == 'edit'
+          key = params[:controller].singularize
+          translated = instance_variable_get('@' + key) || @item || key.camelize.constantize.find(params[:id])
+
+          if I18n.locale.to_sym != translated.original_locale.to_sym
             flash[:error] = I18n.t('kete_translatable.only_edit_original_locale')
-            redirect_to params.merge(:locale => @basket.original_locale)
+            redirect_to params.merge(:locale => translated.original_locale)
             return false
           end
         end
