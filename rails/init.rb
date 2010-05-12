@@ -1,6 +1,6 @@
 require 'mongo_translatable'
 require 'kete_translatable_content'
-# require 'translatable_content'
+require 'kete'
 
 config.to_prepare do
   kete_translatable_content_ready = true
@@ -14,9 +14,9 @@ config.to_prepare do
   # In test mode however, we always want to have it, since IS_CONFIGURED won't be true
   # at this stage, but it will be changed to true after Rails initializes.
   if (IS_CONFIGURED || Rails.env.test?) && kete_translatable_content_ready
-    TRANSLATABLES.each do |name, spec_hash|
-      args = [:mongo_translate, *spec_hash['translatable_attributes']]
-      args << { :redefine_find => spec_hash['redefine_find'] } unless spec_hash['redefine_hash'].nil?
+    TRANSLATABLES.each do |name, options|
+      args = [:mongo_translate, *options['translatable_attributes']]
+      args << { :redefine_find => options['redefine_find'] } unless options['redefine_hash'].nil?
       name.camelize.constantize.send(*args)
     end
 

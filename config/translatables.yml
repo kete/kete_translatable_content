@@ -14,3 +14,11 @@ extended_field:
   translatable_attributes: [:label, :example]
   views: ['show', 'edit']
   redefine_find: false
+system_setting:
+  translatable_attributes: [:label, :value]
+  views: []
+  additional_columns:
+    takes_translations:
+      type: boolean
+      default: false
+
