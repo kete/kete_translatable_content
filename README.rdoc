@@ -26,6 +26,11 @@ Now you need to run the migration generator to add the columns that kete_transla
   $ script/generate kete_translatable_content_migration
   $ rake db:migrate # add environment if necessary, i.e. rake db:migrate RAILS_ENV=production
 
+Next you'll need to update the system settings that are translatable from the console:
+
+$ script/console # production if need be
+> SystemSetting.update_translatables
+
 It's a good idea to generate the tests and run them before proceeding:
 
   $ script/generate kete_translatable_content_tests
