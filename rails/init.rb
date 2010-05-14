@@ -67,25 +67,32 @@ config.to_prepare do
 
       before_filter :reload_standard_baskets
       def reload_standard_baskets
-        Rails.logger.info "[Kete Translatable Content]: Reloading Standard Baskets to be locale aware"
+        Rails.logger.debug "[Kete Translatable Content]: Reloading Standard Baskets to be locale aware"
         @site_basket.reload
         @help_basket.reload
         @about_basket.reload
         @documentation_basket.reload
       end
 
-      around_filter :redirect_unless_editing_original_locale
+      before_filter :redirect_unless_editing_original_locale, :only => ['edit', 'section']
       def redirect_unless_editing_original_locale
-        if kete_translatable_content? && params[:action] == 'edit'
-          translated = current_translatable_record
-          if I18n.locale.to_sym != translated.original_locale.to_sym
+        if kete_translatable_content? && (params[:action] == 'edit' || params[:action] == 'section')
+          # check to see if we are in the special case for system settings
+          if params[:action] == 'section'
             flash[:error] = I18n.t('kete_translatable.only_edit_original_locale')
-            redirect_to params.merge(:locale => translated.original_locale)
+            redirect_to params.merge(:locale => I18n.default_locale)
             return false
+          else
+            # handle everything else
+            translated = current_translatable_record
+            if I18n.locale.to_sym != translated.original_locale.to_sym
+              flash[:error] = I18n.t('kete_translatable.only_edit_original_locale')
+              redirect_to params.merge(:locale => translated.original_locale)
+              return false
+            end
           end
         end
-
-        yield
+        true
       end
 
       # override mongo_translatable's target_action locally
