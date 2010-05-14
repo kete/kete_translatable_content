@@ -1,4 +1,7 @@
 <div id="<%= h(@section) -%>">
+  <% if flash[:error].present? -%>
+  <div><%=h flash[:error] %></div>
+  <% end -%>
   <fieldset>
     <% form_remote_tag :url => { :action => 'update', :section => @section } do %>
     <% for @setting in @settings -%>

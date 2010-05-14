@@ -78,10 +78,10 @@ config.to_prepare do
       def redirect_unless_editing_original_locale
         if kete_translatable_content? && (params[:action] == 'edit' || params[:action] == 'section')
           # check to see if we are in the special case for system settings
-          if params[:action] == 'section'
+          if params[:action] == 'section' && I18n.locale != I18n.default_locale
             flash[:error] = I18n.t('kete_translatable.only_edit_original_locale')
-            redirect_to params.merge(:locale => I18n.default_locale)
-            return false
+            I18n.locale = I18n.default_locale
+            return true
           else
             # handle everything else
             translated = current_translatable_record
@@ -101,8 +101,9 @@ config.to_prepare do
         # relies on first view defined in Kete.translatables for a key
         # being the redirect to action
         key = translated.class.name.tableize.singularize
-        action = options.delete(:action) || Kete.translatables[key]['views'].first
-        action = 'index' if key == 'system_setting'
+        target_action = options.delete(:action) || Kete.translatables[key]['views'].first
+        target_action = 'index' if key == 'system_setting'
+        target_action
       end
 
       # override mongo_translatable's target_locale locally
@@ -110,8 +111,8 @@ config.to_prepare do
       # make sure we redirect to a locale the user has access to after translations are created or saved
       def target_locale(options = {})
         translated = @translated || @translatable
-        override_locale = translated.original_locale if target_action.to_sym == :edit
-        override_locale || options.delete(:action) || (@translation.locale if @translation) || I18n.locale
+        override_locale = target_action.to_sym == :edit ? translated.original_locale : nil
+        override_locale || options.delete(:locale) || (@translation.locale if @translation) || I18n.locale
       end
       
       # override mongo_translatable's target_controller locally
