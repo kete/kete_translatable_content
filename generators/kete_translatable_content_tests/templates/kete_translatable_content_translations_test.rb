@@ -4,7 +4,7 @@ require 'test_helper'
 # new translatable fields are added, it doesn't have missing strings)
 class KeteTranslatableContentTranslationsTest < ActiveSupport::TestCase
 
-  TRANSLATABLES.each do |name, attributes|
+  Kete.translatables.each do |name, attributes|
 
     context "The #{name.humanize} translatable" do
 

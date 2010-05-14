@@ -15,8 +15,9 @@ extended_field:
   views: ['show', 'edit']
   redefine_find: false
 system_setting:
-  translatable_attributes: [:label, :value]
-  views: []
+  translatable_attributes: [:value]
+  controller: configure
+  views: ['section']
   additional_columns:
     takes_translations:
       type: boolean

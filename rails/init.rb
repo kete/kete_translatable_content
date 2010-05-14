@@ -4,7 +4,7 @@ require 'kete'
 
 config.to_prepare do
   kete_translatable_content_ready = true
-  TRANSLATABLES.keys.each do |name|
+  Kete.translatables.keys.each do |name|
     translatable = name.camelize.constantize.send(:new) rescue false
     kete_translatable_content_ready = translatable && translatable.respond_to?(:original_locale)
     break if kete_translatable_content_ready == false
@@ -14,7 +14,7 @@ config.to_prepare do
   # In test mode however, we always want to have it, since IS_CONFIGURED won't be true
   # at this stage, but it will be changed to true after Rails initializes.
   if (IS_CONFIGURED || Rails.env.test?) && kete_translatable_content_ready
-    TRANSLATABLES.each do |name, options|
+    Kete.translatables.each do |name, options|
       args = [:mongo_translate, *options['translatable_attributes']]
       args << { :redefine_find => options['redefine_find'] } unless options['redefine_hash'].nil?
       name.camelize.constantize.send(*args)
@@ -35,9 +35,27 @@ config.to_prepare do
 
     ApplicationController.class_eval do
       def kete_translatable_content?
-        translatable_controllers = TRANSLATABLES.keys.collect(&:pluralize)
-        translatable_controllers.include?(params[:controller]) &&
-          TRANSLATABLES[params[:controller].singularize]['views'].include?(params[:action])
+        controller = params[:controller]
+        controller_as_key = controller.singularize
+        action = params[:action]
+
+        return true if Kete.translatables[controller_as_key] &&
+          Kete.translatables[controller_as_key]['views'] &&
+          Kete.translatables[controller_as_key]['views'].include?(action)
+
+
+        # for some translatables,
+        # the controller is different than (or in addition to) its key.pluralized
+        valid = false
+        translatables_with_controller = Kete.translatables.select { |t| t.last['controller'].present? }
+        translatables_with_controller.each do |name, options|
+          controller_valid = true if options['controller'] == controller
+          
+          if controller_valid
+            valid = true if options['views'].include?(action)
+          end
+        end
+        valid
       end
       helper_method :kete_translatable_content?
 
@@ -73,10 +91,11 @@ config.to_prepare do
       # override mongo_translatable's target_action locally
       def target_action(options = {})
         translated = @translated || @translatable
-        # relies on first view defined in TRANSLATABLES for a key
+        # relies on first view defined in Kete.translatables for a key
         # being the redirect to action
         key = translated.class.name.tableize.singularize
-        options.delete(:action) || TRANSLATABLES[key]['views'].first
+        action = options.delete(:action) || Kete.translatables[key]['views'].first
+        action = 'index' if key == 'system_setting'
       end
 
       # override mongo_translatable's target_locale locally
@@ -87,7 +106,20 @@ config.to_prepare do
         override_locale = translated.original_locale if target_action.to_sym == :edit
         override_locale || options.delete(:action) || (@translation.locale if @translation) || I18n.locale
       end
-
+      
+      # override mongo_translatable's target_controller locally
+      # some kete translatables don't fall back under their own controller
+      def target_controller(options = {})
+        controller = options.delete(:controller)
+        if controller.nil?
+          key = options.delete(:translatable_params_name)
+          if Kete.translatables[key] && Kete.translatables[key]['controller'].present?
+            controller = Kete.translatables[key]['controller']
+          else
+            controller = key.pluralize
+          end
+        end
+      end
     end
 
     # we only override specific extended field uses for translation
@@ -106,24 +138,24 @@ config.to_prepare do
     end
 
     unless Kete.extensions[:blocks]
-      Kete.extensions[:blocks] = { :basket => Array.new, :user => Array.new }
+      Kete.extensions[:blocks] = { :basket => Array.new, :user => Array.new, :system_setting => Array.new }
     end
 
-    # TODO: DRY this up
-    extension_block = Proc.new { require 'translatable_content/extensions/basket' }
+    # models we extend
+    require_blocks = ['basket', 'user', 'system_setting']
+    require_path_stub = 'translatable_content/extensions/'
 
-    unless Kete.extensions[:blocks][:basket]
-      Kete.extensions[:blocks][:basket] = Array.new
+    require_blocks.each do |name|
+      key = name.to_sym
+      path_to_extension = require_path_stub + name
+
+      extension_block = Proc.new { require path_to_extension }
+      
+      unless Kete.extensions[:blocks][key]
+        Kete.extensions[:blocks][key] = Array.new
+      end
+      
+      Kete.extensions[:blocks][key] << extension_block
     end
-
-    Kete.extensions[:blocks][:basket] << extension_block
-
-    unless Kete.extensions[:blocks][:user]
-      Kete.extensions[:blocks][:user] = Array.new
-    end
-
-    extension_block_user = Proc.new { require 'translatable_content/extensions/user' }
-
-    Kete.extensions[:blocks][:user] << extension_block_user
   end
 end

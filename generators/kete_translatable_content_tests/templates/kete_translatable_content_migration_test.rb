@@ -17,7 +17,7 @@ class MigrationGeneratorTest < ActiveSupport::TestCase
       new_file = (file_list - @original_files).first
       assert_match /add_kete_translatable_content_fields/, new_file
       assert_match /require \'kete_translatable_content\'/, File.read(new_file)
-      assert_match /TRANSLATABLES.keys.each/, File.read(new_file)
+      assert_match /Kete.translatables.keys.each/, File.read(new_file)
     end
 
     teardown do

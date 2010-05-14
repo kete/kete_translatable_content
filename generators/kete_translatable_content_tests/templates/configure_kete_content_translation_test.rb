@@ -4,7 +4,7 @@ require 'test_helper'
 # to mongo_translatable instance methods
 class ConfigureKeteContentTranslationTest < ActiveSupport::TestCase
 
-  TRANSLATABLES.keys.each do |name|
+  Kete.translatables.keys.each do |name|
 
     context "A #{name.humanize}" do
 
