@@ -1,6 +1,8 @@
 require 'mongo_translatable'
 require 'kete_translatable_content'
-require 'kete'
+# we do this here because we need it sooner
+# other extensions as the are declared later
+require 'translatable_content/extensions/kete'
 
 config.to_prepare do
   kete_translatable_content_ready = true
