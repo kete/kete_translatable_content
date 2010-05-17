@@ -2,10 +2,17 @@ en:
   baskets:
     form:
       name: "Name:"
+      index_page_extra_side_bar_html: "Homepage Options: Side Bar HTML"
+  configurable_settings:
+    form:
+      name: "Value:"
   extended_fields:
     form:
       example: "Example:"
       label: "Label:"
+  feeds:
+    form:
+      title: "Title:"
   kete_translatable:
     only_edit_original_locale: "You can only edit the original locale."
   licenses:
@@ -16,6 +23,9 @@ en:
     form:
       title: "Title:"
       source_credit: "Source Credit:"
+  system_settings:
+    form:
+      value: "{{t.base.value}}"
   topic_types:
     form:
       description: "Description:"

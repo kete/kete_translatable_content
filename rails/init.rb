@@ -76,15 +76,17 @@ config.to_prepare do
         @documentation_basket.reload
       end
 
-      before_filter :redirect_unless_editing_original_locale, :only => ['edit', 'section']
+      before_filter :redirect_unless_editing_original_locale, :only => ['edit', 'section', 'appearance', 'homepage_options']
       def redirect_unless_editing_original_locale
-        if kete_translatable_content? && (params[:action] == 'edit' || params[:action] == 'section')
+        action = params[:action]
+        editing_actions = ['edit', 'section', 'appearance', 'homepage_options']
+        if kete_translatable_content? && editing_actions.include?(action)
           # check to see if we are in the special case for system settings
-          if params[:action] == 'section' && I18n.locale != I18n.default_locale
+          if action == 'section' && I18n.locale.to_sym != I18n.default_locale.to_sym
             flash[:error] = I18n.t('kete_translatable.only_edit_original_locale')
             I18n.locale = I18n.default_locale
             return true
-          else
+          elsif action != 'section'
             # handle everything else
             translated = current_translatable_record
             if I18n.locale.to_sym != translated.original_locale.to_sym
@@ -103,9 +105,15 @@ config.to_prepare do
         # relies on first view defined in Kete.translatables for a key
         # being the redirect to action
         key = translated.class.name.tableize.singularize
-        target_action = options.delete(:action) || Kete.translatables[key]['views'].first
-        target_action = 'index' if key == 'system_setting'
-        target_action
+
+        # TODO: some exceptions probably would have better usability
+        # if they didn't go to index, tweak later
+        exceptions = ['system_setting', 'configurable_setting', 'feed']
+
+        target_action = case key
+                        when *exceptions then 'index'
+                        else options.delete(:action) || Kete.translatables[key]['views'].first
+                        end
       end
 
       # override mongo_translatable's target_locale locally

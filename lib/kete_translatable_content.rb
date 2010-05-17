@@ -21,3 +21,6 @@ Kete.define_reader_method_as('translatable_system_settings', ['Pretty Site Name'
                                                               'Additional Credits HTML',
                                                               'Restricted Flag'
                                                              ])
+
+Kete.define_reader_method_as('translatable_configurable_settings',
+                             ['additional_footer_content'])

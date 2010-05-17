@@ -1,5 +1,5 @@
 basket:
-  translatable_attributes: [:name]
+  translatable_attributes: [:name, :index_page_extra_side_bar_html]
   views: ['edit']
 topic_type:
   translatable_attributes: [:name, :description]
@@ -22,4 +22,12 @@ system_setting:
     takes_translations:
       type: boolean
       default: false
+configurable_setting:
+  translatable_attributes: [:value]
+  controller: baskets
+  views: ['appearance']
+feed:
+  translatable_attributes: [:title]
+  controller: baskets
+  views: ['homepage_options']
 
