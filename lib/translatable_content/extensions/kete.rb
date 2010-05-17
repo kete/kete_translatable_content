@@ -17,7 +17,7 @@ class Kete
       # create the template code
       code = Proc.new {
         localize_value = nil
-        if setting.takes_translations?
+        if setting.respond_to?(:takes_translations?) && setting.takes_translations?
           localized_value = localized_value_from(setting.id)
         end
         value = localized_value || class_variable_get('@@' + var_name)
