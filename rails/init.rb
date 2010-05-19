@@ -99,6 +99,17 @@ config.to_prepare do
         true
       end
 
+      # override mongo_translatable's target_id locally
+      def target_id(options = {})
+        translated = options.delete(:id)
+        basket_classes = [Feed, ConfigurableSetting]
+        id = case translated.class
+             when *basket_classes then translated.basket.id
+             when SystemSetting then nil
+             else translated
+             end
+      end
+
       # override mongo_translatable's target_action locally
       def target_action(options = {})
         translated = @translated || @translatable
@@ -106,12 +117,10 @@ config.to_prepare do
         # being the redirect to action
         key = translated.class.name.tableize.singularize
 
-        # TODO: some exceptions probably would have better usability
-        # if they didn't go to index, tweak later
-        exceptions = ['system_setting', 'configurable_setting', 'feed']
-
         target_action = case key
-                        when *exceptions then 'index'
+                        when 'system_setting' then 'index'
+                        when 'configurable_setting' then 'appearance'
+                        when 'feed' then 'homepage_options'
                         else options.delete(:action) || Kete.translatables[key]['views'].first
                         end
       end
@@ -121,7 +130,7 @@ config.to_prepare do
       # make sure we redirect to a locale the user has access to after translations are created or saved
       def target_locale(options = {})
         translated = @translated || @translatable
-        override_locale = target_action.to_sym == :edit ? translated.original_locale : nil
+        override_locale = translated.original_locale
         override_locale || options.delete(:locale) || (@translation.locale if @translation) || I18n.locale
       end
       

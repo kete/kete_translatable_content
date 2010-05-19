@@ -30,4 +30,6 @@ feed:
   translatable_attributes: [:title]
   controller: baskets
   views: ['homepage_options']
-
+choice:
+  translatable_attributes: [:label]
+  views: ['show', 'edit']
