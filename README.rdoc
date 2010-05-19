@@ -2,11 +2,21 @@
 
 Kete Translatable Content is a gem that is an add-on for Kete web applications that takes advantage of the mongo_translatable gem's functionality. As you would expect, you use it to add the ability to translate content in your Kete web site.
 
+Obviously, your site should be set up to support to support multiples locales for this add-on to be useful. See below for details.
+
 == Usage
 
 Currently only tested against Rails 2.3.5.  When Kete moves to Rails 3, this gem will be updated to.
 
-First install the needed things:
+As you would expect, multiple locale support is only necessary if your site is set up to support multiple locales. Update config/locales.yml and config/locales/ appropriately for the locales you want to support. See here for details:
+
+http://kete.net.nz/documentation/topics/show/289-using-translate-plugin-to-translate-your-kete-installation
+
+You'll want to review the mongo_translatable gem's installation details for steps to install MongoDB, etc.
+
+http://github.com/kete/mongo_translatable
+
+Then install the needed gems:
 
   gem install mongo_translatable kete_translatable_content
 
