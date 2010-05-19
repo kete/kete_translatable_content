@@ -48,6 +48,14 @@ If the tests run ok, restart your application and it should be ready to use from
 
 Your tests should also now include testing for the kete_translatable_content add-on.
 
+Lastly you will want restart your Kete server and backgroundrb:
+
+$ touch tmp/restart.txt
+$ script/backgroundrb stop
+...
+$ script/backgroundrb start
+
+
 == Note on Patches/Pull Requests
 
 * Fork the project.
