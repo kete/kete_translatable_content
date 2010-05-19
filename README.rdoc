@@ -17,7 +17,7 @@ In the Rails::Initializer.run config block  config/environment.rb:
   config.gem "mongo_translatable"
   config.gem "kete_translatable_content"
 
-At the bottom of config/environment.rb:
+Create the file config/initializers/mongo_mapper.rb and put this in it:
 
   MongoMapper.database = 'your_app'
 
