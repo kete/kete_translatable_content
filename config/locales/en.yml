@@ -1,11 +1,14 @@
 en:
   baskets:
     form:
-      name: "Name:"
       index_page_extra_side_bar_html: "Homepage Options: Side Bar HTML"
+      name: "Name:"
+  choices:
+    form:
+      label: "Label:"
   configurable_settings:
     form:
-      name: "Value:"
+      value: "Value:"
   extended_fields:
     form:
       example: "Example:"
@@ -21,8 +24,8 @@ en:
       name: "Name:"
   search_sources:
     form:
-      title: "Title:"
       source_credit: "Source Credit:"
+      title: "Title:"
   system_settings:
     form:
       value: "{{t.base.value}}"

@@ -9,6 +9,12 @@ def translate_for_locales(record, *locales)
   end
 end
 
+# simulate languages available without actually making them
+def I18n.available_locales_with_labels; { 'en' => 'English', 'fr' => 'Français', 'zh' => '中文' }; end
+TranslationsHelper.available_locales = I18n.available_locales_with_labels
+def I18n.available_locales; I18n.available_locales_with_labels.keys; end
+RoutingFilter::Locale.locales = I18n.available_locales
+
 class KeteTranslationsTest < ActionController::IntegrationTest
 
   context "A translatable basket" do

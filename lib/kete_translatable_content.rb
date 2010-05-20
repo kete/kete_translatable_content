@@ -2,6 +2,8 @@
 # and does not need to pull in mongo libs or adjust view paths. Such code
 # should be done in ../rails/init.rb
 
+require 'translatable_content/extensions/kete'
+
 Kete.define_reader_method_as('translatables',
                              YAML.load(IO.read(File.join(File.dirname(__FILE__), '../config/translatables.yml'))))
 

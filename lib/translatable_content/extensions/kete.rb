@@ -8,32 +8,18 @@ class Kete
       SystemSetting.find(setting_id).constant_value
     end
 
+    def reader_proc_for(setting)
+      method_name = setting.constant_name.downcase
 
-    def define_reader_method_for(setting)
-      var_name = setting.constant_name.downcase
-
-      class_variable_set('@@' + var_name, setting.constant_value)
-
-      # create the template code
-      code = Proc.new {
-        localize_value = nil
+      Proc.new {
         if setting.respond_to?(:takes_translations?) && setting.takes_translations?
           localized_value = localized_value_from(setting.id)
+          return localized_value if localized_value
         end
-        value = localized_value || class_variable_get('@@' + var_name)
-      }
-   
-      metaclass.instance_eval do
-        define_method(var_name, &code)
-      end
 
-      # create predicate method if boolean
-      eval_value = setting.constant_value
-      if eval_value.kind_of?(TrueClass) || eval_value.kind_of?(FalseClass)
-        metaclass.instance_eval do
-          define_method("#{var_name}?", &code)
-        end
-      end 
+        method_name = method_name.sub('?', '') if method_name.include?('?')
+        class_variable_get('@@' + method_name)
+      }
     end
   end
 end
