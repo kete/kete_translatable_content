@@ -9,4 +9,3 @@ class Basket
     basket_list
   end
 end
-

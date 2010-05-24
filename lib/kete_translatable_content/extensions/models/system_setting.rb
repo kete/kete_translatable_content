@@ -7,4 +7,3 @@ class SystemSetting
     update_attributes!(:takes_translations => true)
   end
 end
-

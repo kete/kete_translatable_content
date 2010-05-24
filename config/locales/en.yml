@@ -29,6 +29,9 @@ en:
   system_settings:
     form:
       value: "{{t.base.value}}"
+  tags:
+    form:
+      name: "Tag Name:"
   topic_types:
     form:
       description: "Description:"

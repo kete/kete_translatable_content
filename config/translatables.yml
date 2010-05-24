@@ -16,7 +16,7 @@ extended_field:
   redefine_find: false
 system_setting:
   translatable_attributes: [:value]
-  controller: configure
+  controllers: ['configure']
   views: ['section']
   additional_columns:
     takes_translations:
@@ -24,12 +24,16 @@ system_setting:
       default: false
 configurable_setting:
   translatable_attributes: [:value]
-  controller: baskets
+  controllers: ['baskets']
   views: ['appearance']
 feed:
   translatable_attributes: [:title]
-  controller: baskets
+  controllers: ['baskets']
   views: ['homepage_options']
 choice:
   translatable_attributes: [:label]
   views: ['show', 'edit']
+tag:
+  translatable_attributes: [:name]
+  controllers: ['tags', 'audio', 'comments', 'documents', 'images', 'topics', 'video', 'web_links']
+  views: ['list', 'show']
