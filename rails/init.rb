@@ -29,7 +29,8 @@ config.to_prepare do
 
     # override some controllers and helpers to be kete translatable aware
     exts = File.join(File.dirname(__FILE__), '../lib/kete_translatable_content/extensions/{controllers,helpers}/*')
-    Dir[exts].each { |ext_path| require ext_path }
+    # use Kernel.load here so that changes to the extensions are reloaded on each request in development
+    Dir[exts].each { |ext_path| Kernel.load(ext_path) }
 
     # models we extend
     Kete.extensions[:blocks] ||= Hash.new
