@@ -1,6 +1,6 @@
 # extensions to the kete video model
 
-require 'kete_translatable_content/extensions/tagging_overides'
+require File.join(File.dirname(__FILE__), '../tagging_overides')
 
 class Video
   include TaggingOverides
