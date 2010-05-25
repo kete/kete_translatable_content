@@ -21,11 +21,11 @@ class AddKeteTranslatableContentFields < ActiveRecord::Migration
   def self.down
     Kete.translatables.keys.each do |name|
       table_name = name.tableize.to_sym
-      remove_column table_name, :original_locale
-      remove_column table_name, :locale
+      remove_column(table_name, :original_locale) rescue nil
+      remove_column(table_name, :locale) rescue nil
       if Kete.translatables[name]['additional_columns'] && Kete.translatables[name]['additional_columns'].any?
         Kete.translatables[name]['additional_columns'].each do |column|
-          remove_column table_name, column.first.to_sym
+          remove_column(table_name, column.first.to_sym) rescue nil
         end
       end
     end
