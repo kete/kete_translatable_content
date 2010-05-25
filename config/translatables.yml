@@ -36,4 +36,4 @@ choice:
 tag:
   translatable_attributes: [:name]
   controllers: ['tags', 'audio', 'comments', 'documents', 'images', 'topics', 'video', 'web_links']
-  views: ['list', 'show']
+  views: ['show']
