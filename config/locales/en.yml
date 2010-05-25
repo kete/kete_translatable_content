@@ -22,6 +22,9 @@ en:
     form:
       description: "Description:"
       name: "Name:"
+  search_helper:
+    tag_show_link_options:
+      title_with_translations: "Information about and translations for the {{t.base.tag}} {{tag_name}}. "
   search_sources:
     form:
       source_credit: "Source Credit:"
