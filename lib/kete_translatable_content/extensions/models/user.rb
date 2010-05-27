@@ -1,4 +1,8 @@
 # extensions to the kete user model
+
+# require the model in Kete before reopening it below
+User
+
 class User
   def basket_permissions
     select = "roles.id AS role_id, roles.name AS role_name, baskets.id AS basket_id, baskets.urlified_name AS basket_urlified_name, baskets.name AS basket_name"

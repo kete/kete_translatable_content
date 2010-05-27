@@ -1,4 +1,8 @@
 # extensions to the kete tag model
+
+# require the model in Kete before reopening it below
+Tag
+
 class Tag
   # When creating a tag, check both the tags model, and tag translations
   # This is done so that for each tag we don't end up with additiona Tag

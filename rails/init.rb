@@ -37,7 +37,7 @@ config.to_prepare do
     Dir[ File.join(File.dirname(__FILE__), '../lib/kete_translatable_content/extensions/models/*') ].each do |ext_path|
       key = File.basename(ext_path, '.rb').to_sym
       Kete.extensions[:blocks][key] ||= Array.new
-      Kete.extensions[:blocks][key] << Proc.new { require ext_path }
+      Kete.extensions[:blocks][key] << Proc.new { Kernel.load(ext_path) }
     end
 
   end

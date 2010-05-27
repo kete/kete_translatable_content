@@ -1,4 +1,8 @@
 # extensions to the kete basket model
+
+# require the model in Kete before reopening it below
+Basket
+
 class Basket
   def self.list_as_names_and_urlified_names
     basket_list = Array.new
