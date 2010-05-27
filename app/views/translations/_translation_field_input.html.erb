@@ -1,0 +1,21 @@
+<%# Override to add the mceEditor class to the textarea tag for certain fields %>
+
+<%# assign the value of the untranslated field if this record is a new object %>
+<% form.object.send("#{attribute_key}=", untranslated_value[:value]) if form.object.new_record? %>
+
+<% if translatable_field_a_text_area?(form, attribute_key) %>
+  <%
+  is_tiny_mce_editor = false
+  is_tiny_mce_editor = true if form.object.translatable_class == Basket && attribute_key == :index_page_extra_side_bar_html
+  is_tiny_mce_editor = true if form.object.translatable_class == ConfigurableSetting && form.object.translatable.name == 'additional_footer_content'
+  %>
+
+  <%= form.text_area attribute_key, :rows => 7, :cols => 35, :class => ("mceEditor" if is_tiny_mce_editor) %>
+
+  <% if request.xhr? && is_tiny_mce_editor && !@tiny_mce_editor_initialized %>
+    <%= tiny_mce_init %>
+    <% @tiny_mce_editor_initialized = true %>
+  <% end %>
+<% else %>
+  <%= form.text_field attribute_key %>
+<% end %>

@@ -27,6 +27,22 @@ Kete.define_reader_method_as('translatable_system_settings', ['Pretty Site Name'
 Kete.define_reader_method_as('translatable_configurable_settings',
                              ['additional_footer_content'])
 
+Kete.define_reader_method_as('translatable_tiny_mce_options', {
+  :width => '390',
+  :theme => 'advanced',
+  :theme_advanced_toolbar_location => "top",
+  :theme_advanced_toolbar_align => "left",
+  :theme_advanced_statusbar_location => "bottom",
+  :theme_advanced_buttons1 => %w{ bold italic underline strikethrough separator justifyleft justifycenter justifyright justifyfull separator indent outdent separator bullist numlist separator link unlink image },
+  :theme_advanced_buttons2 => %w{ formatselect fontselect fontsizeselect separator forecolor backcolor separator undo redo },
+  :theme_advanced_buttons3 => %w{ tablecontrols separator fullscreen separator code },
+  :theme_advanced_resizing => true,
+  :theme_advanced_resize_horizontal => false,
+  :convert_urls => false,
+  :content_css => "/stylesheets/base.css",
+  :plugins => %w{ table fullscreen }
+})
+
 def kete_translatable_content_ready?
   kete_translatable_content_ready = true
   Kete.translatables.keys.each do |name|
