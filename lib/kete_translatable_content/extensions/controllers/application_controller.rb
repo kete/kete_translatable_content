@@ -47,39 +47,14 @@ ApplicationController.class_eval do
     true
   end
 
-  # override mongo_translatable's target_id locally
-  def target_id(options = {})
-    translated = options.delete(:id)
-    basket_classes = [Feed, ConfigurableSetting]
-    id = case translated.class
-         when *basket_classes then translated.basket.id
-         when SystemSetting then nil
-         else translated
-         end
-  end
-
-  # override mongo_translatable's target_action locally
-  def target_action(options = {})
-    translated = @translated || @translatable
-    # relies on first view defined in Kete.translatables for a key
-    # being the redirect to action
-    key = translated.class.name.tableize.singularize
-
-    target_action = case key
-                    when 'system_setting' then 'index'
-                    when 'configurable_setting' then 'appearance'
-                    when 'feed' then 'homepage_options'
-                    else options.delete(:action) || Kete.translatables[key]['views'].first
-                    end
-  end
-
   # override mongo_translatable's target_locale locally
   # because we only allow editing of the original locale (see redirect_unless_editing_original_locale)
   # make sure we redirect to a locale the user has access to after translations are created or saved
   def target_locale(options = {})
+    translation = options.delete(:translation) || @translation
     translated = @translated || @translatable
-    override_locale = translated.original_locale
-    override_locale || options.delete(:locale) || (@translation.locale if @translation) || I18n.locale
+    override_locale = translated.original_locale if translated
+    override_locale || options.delete(:locale) || (translation.locale if translation) || I18n.locale
   end
 
   # override mongo_translatable's target_controller locally
@@ -87,12 +62,50 @@ ApplicationController.class_eval do
   def target_controller(options = {})
     controller = options.delete(:controller)
     if controller.nil?
-      key = options.delete(:translatable_params_name)
+      key = options.delete(:translatable_params_name) || @translatable_params_name
       if Kete.translatables[key] && Kete.translatables[key]['controllers'].present?
         controller = Kete.translatables[key]['controllers'].first
       else
         controller = key.pluralize
       end
+    end
+    controller
+  end
+
+  # override mongo_translatable's target_action locally
+  # some kete translatables don't fall back under their own action
+  def target_action(options = {})
+    translated = options.delete(:translated) || @translated || options.delete(:translatable) || @translatable
+
+    case translated.class.name
+    when 'SystemSetting'       then 'index'
+    when 'Feed'                then 'homepage_options'
+    when 'ConfigurableSetting'
+      case translated.configurable_type
+      when 'Basket'
+        'appearance'
+      end
+    else
+      key = translated.class.name.tableize.singularize
+      if Kete.translatables[key] && Kete.translatables[key]['views'].present?
+        Kete.translatables[key]['views'].first
+      else
+        options.delete(:action) || params[:action]
+      end
+    end
+  end
+
+  # override mongo_translatable's target_id locally
+  # some kete translatables don't fall back under their own id
+  def target_id(options = {})
+    translated = options.delete(:translated) || @translated || options.delete(:translatable) || @translatable
+
+    case translated.class.name
+    when 'SystemSetting'       then nil
+    when 'Feed'                then translated.basket_id
+    when 'ConfigurableSetting' then translated.configurable_id
+    else
+      options.delete(:id) || translated
     end
   end
 end
