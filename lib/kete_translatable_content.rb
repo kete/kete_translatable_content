@@ -40,7 +40,7 @@ Kete.define_reader_method_as('translatable_tiny_mce_options', {
   :theme_advanced_resize_horizontal => false,
   :convert_urls => false,
   :content_css => "/stylesheets/base.css",
-  :plugins => %w{ table fullscreen }
+  :plugins => %w{ table fullscreen paste }
 })
 
 def kete_translatable_content_ready?
