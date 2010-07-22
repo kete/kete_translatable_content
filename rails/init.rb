@@ -40,6 +40,18 @@ config.to_prepare do
       Kete.extensions[:blocks][key] << Proc.new { Kernel.load(ext_path) }
     end
 
+    # extend the Generic Muted Worker to have the expire_locale method
+    MethodsForGenericMutedWorker.module_eval do
+      def clear_locale_cache(options = { })
+        locale_to_clear = options[:locale_to_clear]
+        raise unless locale_to_clear
+        
+        # WARNING: this relies on the fact that Kete's current caching scheme is file system based
+        # if an option for Memcache or other caching mechanism is used in the future
+        # this will need to be updated with logic to figure out correct clearing mechanism
+        file_path = "#{Rails.root}/tmp/cache/views/#{Kete.site_name}/#{locale_to_clear}"
+        FileUtils.rm_r(file_path, :force => true) if File.exist?(file_path) && File.directory?(file_path)
+      end
+    end
   end
-
 end
