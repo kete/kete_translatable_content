@@ -45,14 +45,8 @@ It's a good idea to generate the tests and run them before proceeding:
 
   $ script/generate kete_translatable_content_tests
   $ cd test
-  # Kete's suit is quite large, so lets only run the tests we need
-  $ ruby -e "ARGV.each { |f| puts f; load f unless f =~ /^-/  }" \
-     "unit/kete_translatable_content_migration_test.rb" \
-     "unit/configure_kete_content_translation_test.rb" \
-     "unit/kete_translatable_content_translations_test.rb" \
-     "unit/helpers/kete_translatable_content_helper_test.rb" \
-     "functional/configure_kete_content_translation_controller_and_routes_test.rb" \
-     "integration/kete_translations_test.rb"
+  # Run you normal Kete tests
+  $ rake test
 
 If the tests run ok, restart your application and it should be ready to use from the web interface.
 
