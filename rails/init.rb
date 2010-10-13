@@ -11,7 +11,15 @@ config.to_prepare do
     Kete.translatables.each do |name, options|
       args = [:mongo_translate, *options['translatable_attributes']]
       args << { :redefine_find => options['redefine_find'] }
-      name.camelize.constantize.send(*args)
+      
+      class_name = name.camelize
+      if options[:through_version]
+        class_name.constantize.send :include, TranslationFromVersion
+        class_name += "::Version"
+      end
+
+      class_name.constantize.send(*args)
+      class_name.constantize.send(:include, ExtendedContentTranslation) if options[:through_version]
     end
 
     # precedence over a plugin or gem's (i.e. an engine's) app/views

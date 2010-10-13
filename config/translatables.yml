@@ -36,3 +36,27 @@ choice:
 tag:
   translatable_attributes: [:name]
   views: ['show']
+topic:
+  through_version: true
+  translatable_attributes: [:title, :short_summary, :description] # extended content is handled separately
+  views: ['show']
+document:
+  through_version: true
+  translatable_attributes: [:title, :short_summary, :description] # extended content is handled separately
+  views: ['show']
+audio_recording:
+  through_version: true
+  translatable_attributes: [:title, :description] # extended content is handled separately
+  views: ['show']
+still_image:
+  through_version: true
+  translatable_attributes: [:title, :description] # extended content is handled separately
+  views: ['show']
+video:
+  through_version: true
+  translatable_attributes: [:title, :description] # extended content is handled separately
+  views: ['show']
+web_link:
+  through_version: true
+  translatable_attributes: [:title, :description] # extended content is handled separately
+  views: ['show']
