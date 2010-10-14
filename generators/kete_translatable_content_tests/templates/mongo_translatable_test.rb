@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+require 'test_helper'
 require 'mongo_test_helper'
 
 class MongodbTranslatableTest < ActiveSupport::TestCase
