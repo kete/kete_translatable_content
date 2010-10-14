@@ -56,7 +56,6 @@ end
 class AddKeteTranslatableContentFields < ActiveRecord::Migration
   def self.up
     Kete.translatables.keys.each do |name|
-      debugger
       
       table_name = resolve_to_table(name)
 
