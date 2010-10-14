@@ -10,7 +10,7 @@ class ActiveRecord::Migration
         args << { :default => options['default'] } unless options['default'].nil?
         add_column *args
 
-        if through_version(name)
+        if through_version?(name)
           args[0] = resolve_to_table(name, :without_versions => true)
           add_column *args
         end
@@ -23,7 +23,7 @@ class ActiveRecord::Migration
       Kete.translatables[name]['additional_columns'].each do |column|
         remove_column(table_name, column.first.to_sym) rescue nil
 
-        if through_version(name)
+        if through_version?(name)
           remove_column(resolve_to_table(name, :without_versions => true), column.first.to_sym) rescue nil
         end
       end
