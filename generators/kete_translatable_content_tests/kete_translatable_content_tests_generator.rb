@@ -24,6 +24,15 @@ class KeteTranslatableContentTestsGenerator < Rails::Generator::Base
       m.template 'kete_translations_test.rb',
                   File.join('test/integration',
                             'kete_translations_test.rb')
+      m.template 'mongo_test_helper.rb',
+                  File.join('test/',
+                            'mongo_test_helper.rb')
+      m.template 'mongo_factories.rb',
+                  File.join('test/',
+                            'mongo_factories.rb')
+      m.template 'mongo_translatable_test.rb',
+                  File.join('test/unit',
+                            'mongo_translatable_test.rb')
     end
   end
 end
