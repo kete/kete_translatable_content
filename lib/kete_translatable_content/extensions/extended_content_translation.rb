@@ -7,22 +7,25 @@
 # and we can go on declaring new extended fields dynamically
 module ExtendedContentTranslation
   unless included_modules.include? ExtendedContentTranslation
-    
-    # override so that we may have extended fields be translatable attributes
-    def translatable_attributes
-      # klass is ::Version classes parent namespace wise
-      klass = original_class
+    def self.included(base)
 
-      type = klass == Topic ? topic_type : ContentType.find_by_name(klass.name)
+      #Send define method because scopes are not playing nicely together
+      base.send(:define_method, :translatable_attributes) do
+        # klass is ::Version classes parent namespace wise
+        klass = self.class
 
-      fields = type.mapped_fields.select { |f| ['text', 'textarea', 'choice', 'autocomplete'].include?(f.f_type) }
-      type_translatable_attributes = fields.collect { |f| f.label_for_params.to_sym }
-      
-      klass::Translation.update_keys_if_necessary_with(type_translatable_attributes)
+        type = klass == Topic ? topic_type : ContentType.find_by_class_name(klass.name)
 
-      update_translation_for_methods_if_necessary_with(type_translatable_attributes)
+        fields = type.mapped_fields.select { |f| ['text', 'textarea', 'choice', 'autocomplete'].include?(f.ftype) }
+        type_translatable_attributes = fields.collect { |f| f.label_for_params.to_sym }
 
-      klass::Translation.translatable_attributes + type_translatable_attributes
+        klass::Translation.update_keys_if_necessary_with(type_translatable_attributes)
+
+        update_translation_for_methods_if_necessary_with(type_translatable_attributes)
+
+        self.class.translatable_attributes + type_translatable_attributes
+      end
     end
   end
 end
+

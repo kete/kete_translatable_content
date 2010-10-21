@@ -1,5 +1,7 @@
 require 'mongo_translatable'
 require 'kete_translatable_content'
+require 'kete_translatable_content/extensions/extended_content_translation'
+require 'kete_translatable_content/extensions/translation_from_version'
 
 config.to_prepare do
 
@@ -10,16 +12,20 @@ config.to_prepare do
 
     Kete.translatables.each do |name, options|
       args = [:mongo_translate, *options['translatable_attributes']]
-      args << { :redefine_find => options['redefine_find'] }
+      args << { :redefine_find => options['redefine_find'],
+        :through_version => options["through_version"]}
       
       class_name = name.camelize
-      if options[:through_version]
-        class_name.constantize.send :include, TranslationFromVersion
-        class_name += "::Version"
-      end
 
       class_name.constantize.send(*args)
-      class_name.constantize.send(:include, ExtendedContentTranslation) if options[:through_version]
+
+      if options["through_version"]
+        class_name.constantize.send :include, TranslationFromVersion
+        trans_class = class_name + "::Translation"
+        trans_class.constantize.send :update_keys_if_necessary_with, [:version]
+      end
+
+
     end
 
     # precedence over a plugin or gem's (i.e. an engine's) app/views
@@ -61,5 +67,9 @@ config.to_prepare do
         FileUtils.rm_r(file_path, :force => true) if File.exist?(file_path) && File.directory?(file_path)
       end
     end
+  end
+  Kete.translatables.each do |name, options|
+    class_name = name.camelize
+    class_name.constantize.send :include, ExtendedContentTranslation
   end
 end

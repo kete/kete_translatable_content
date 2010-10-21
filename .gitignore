@@ -18,5 +18,6 @@ coverage
 rdoc
 pkg
 *.gemspec
+.rvmrc
 
 ## PROJECT::SPECIFIC
