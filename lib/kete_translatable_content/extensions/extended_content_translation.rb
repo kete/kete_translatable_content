@@ -16,14 +16,18 @@ module ExtendedContentTranslation
 
         type = klass == Topic ? topic_type : ContentType.find_by_class_name(klass.name)
 
-        fields = type.mapped_fields.select { |f| ['text', 'textarea', 'choice', 'autocomplete'].include?(f.ftype) }
-        type_translatable_attributes = fields.collect { |f| f.label_for_params.to_sym }
+        if type
+          fields = type.mapped_fields.select { |f| ['text', 'textarea', 'choice', 'autocomplete'].include?(f.ftype) }
+          type_translatable_attributes = fields.collect { |f| f.label_for_params.to_sym }
 
-        klass::Translation.update_keys_if_necessary_with(type_translatable_attributes)
+          klass::Translation.update_keys_if_necessary_with(type_translatable_attributes)
 
-        update_translation_for_methods_if_necessary_with(type_translatable_attributes)
+          update_translation_for_methods_if_necessary_with(type_translatable_attributes)
 
-        self.class.translatable_attributes + type_translatable_attributes
+          return self.class.translatable_attributes + type_translatable_attributes
+        else
+          return self.class.translatable_attributes
+        end
       end
     end
   end
