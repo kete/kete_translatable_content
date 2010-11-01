@@ -9,9 +9,9 @@ TranslationsHelper.module_eval do
 
   def localized_label_for(attribute_key)
     #Using the content_values because it's the only eash thing that matches the attribute key.
-    extended_values = @original.extended_content_values
-    if extended_values.keys.include?(attribute_key.to_s)
-      return ExtendedField.params_to_label(attribute_key)
+    extended_values = @original.extended_content_values if @original.respond_to?('extended_content_values')
+    if extended_values && extended_values.keys.include?(attribute_key.to_s)
+      return display_label_for(ExtendedField.find(:first, :conditions => ["label = ?" ,ExtendedField.params_to_label(attribute_key)]))
     else
       t(@translatable_class.name.tableize + '.' + 'form' + '.' + attribute_key.to_s)
     end
