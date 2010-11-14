@@ -16,7 +16,12 @@
       <a name="main-content"></a>
       <% if params[:controller] != 'configure' && kete_translatable_content? && !['appearance', 'homepage_options'].include?(params[:action]) -%>
         <div id="translations-links">
-          <%= available_in_locales_for(current_translatable_record) -%>
-          <%= needed_in_locales_for(current_translatable_record, :lightbox => true) -%>
+          <% if current_translatable_record.version %>
+            <%= available_in_locales_for(current_translatable_record, :params => {:version => current_translatable_record.version}) -%>
+            <%= needed_in_locales_for(current_translatable_record, :lightbox => true, :params => {:version => current_translatable_record.version}) %>
+          <% else %>
+            <%= available_in_locales_for(current_translatable_record) -%>
+            <%= needed_in_locales_for(current_translatable_record, :lightbox => true) %>
+          <% end %>
         </div>
       <% end -%>

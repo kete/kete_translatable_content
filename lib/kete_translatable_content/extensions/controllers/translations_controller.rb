@@ -6,7 +6,19 @@ TranslationsController.class_eval do
   after_filter :expire_locale_cache, :only => [:create, :update]
 
   private
-  
+
+  %w{translatable translated}.each do |term|
+    define_method("get_" + term) do
+      if params[:version]
+        value = @translatable_class.find(params[@translatable_key])
+        value.revert_to(params[:version].to_i)
+      else
+        value = @translatable_class.find(params[@translatable_key])
+      end
+
+      instance_variable_set("@" + term, value)
+    end
+  end
   # this is the big hammer for translation clearing
   # it does the entire locale's cache if a translation changes
   # only use on UI element related models

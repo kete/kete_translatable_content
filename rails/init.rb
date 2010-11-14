@@ -68,8 +68,10 @@ config.to_prepare do
       end
     end
   end
-  Kete.translatables.each do |name, options|
-    class_name = name.camelize
-    class_name.constantize.send :include, ExtendedContentTranslation
+  if (IS_CONFIGURED || Rails.env.test?) && kete_translatable_content_ready?
+    Kete.translatables.each do |name, options|
+      class_name = name.camelize
+      class_name.constantize.send :include, ExtendedContentTranslation
+    end
   end
 end
