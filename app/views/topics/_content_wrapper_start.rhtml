@@ -16,7 +16,7 @@
       <a name="main-content"></a>
       <% if params[:controller] != 'configure' && kete_translatable_content? && !['appearance', 'homepage_options'].include?(params[:action]) -%>
         <div id="translate-controls">
-          <% version = current_translatable_record.version || "" %>
+          <% version = (current_translatable_record.respond_to?(:version) && current_translatable_record.version) || "" %>
           <div style="display:inline" id="translations">Available in: <%= raw_locale_links(:params => {:version => version }).join(" | ") -%> </div>
           <div style="display:inline" id="translate"> <%= translate_link(current_translatable_record, :lightbox => true,  :params => {:version => version}) %> </div>
         </div>
