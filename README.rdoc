@@ -20,7 +20,7 @@ Then install the needed gems:
 
   gem install mongo_translatable kete_translatable_content
 
-After installing the gem do the following to add kete_translatable_content to you app:
+After installing the gem do the following to add kete_translatable_content to your app:
 
 In the Rails::Initializer.run config block  config/environment.rb:
 
@@ -44,7 +44,6 @@ $ script/console # production if need be
 It's a good idea to generate the tests and run them before proceeding:
 
   $ script/generate kete_translatable_content_tests
-  $ cd test
   # Run you normal Kete tests
   $ rake test
 
@@ -63,13 +62,17 @@ $ script/backgroundrb start
 == Note on Patches/Pull Requests
 
 * Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
+* Make your feature addition or bug fix to a branch following this convention:
+  enhancement_[ticket #]_short_description
+  or
+  bugfix_[ticket #]_short_description
+  replace [ticket #] with ticket number from http://kete.lighthouseapp.com/projects/61585-kete_translatable_content
+* Add tests for it. This is important so we don't break it in a
   future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+* Send me a pull request.
 
 == Copyright
 
-Copyright (c) 2010 Walter McGinnis. See LICENSE for details.
+Copyright (c) 2010 Horowhenua Library Trust. See LICENSE for details.
