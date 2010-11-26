@@ -44,9 +44,10 @@ class KeteTranslationsTest < ActionController::IntegrationTest
       end
 
       should "have locales that have been translated on its show page" do
-        visit "/en/#{@basket.urlified_name}/baskets/edit/#{@basket.id}"
+        url_stub = "#{@basket.urlified_name}/baskets/edit/#{@basket.id}"
+        visit "/en/#{url_stub}"
         assert_have_tag "li", :content => "Français"
-        assert_have_tag "a", :href => "/zh/#{@basket.urlified_name}/baskets/edit/#{@basket.id}", :content => "中文"
+        assert_have_tag "a", :href => "/zh/#{url_stub}", :content => "中文"
       end
 
     end
