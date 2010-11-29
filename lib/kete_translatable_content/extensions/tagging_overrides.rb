@@ -2,8 +2,8 @@
 # Make sure these are only done when the class they are being included into already responds
 # to public_tags, otherwise it'll end up trying to alias a method that doesn't exist
 
-module TaggingOverides
-  unless included_modules.include? TaggingOverides
+module TaggingOverrides
+  unless included_modules.include? TaggingOverrides
     def self.included(klass)
       klass.class_eval do
 

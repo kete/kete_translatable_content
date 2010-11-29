@@ -9,7 +9,7 @@ begin
     gem.description = %Q{Kete Translatable Content is a gem that is an add-on for Kete web applications that takes advantage of the mongo_translatable gem functionality. As you would expect, you use it to add the ability to translate content in your Kete web site.}
     gem.email = "walter@katipo.co.nz"
     gem.homepage = "http://github.com/kete/kete_translatable_content"
-    gem.authors = ["Walter McGinnis"]
+    gem.authors = ["Walter McGinnis", "Kieran Pilkington", "Breccan McLeod-Lundy"]
     gem.add_development_dependency "mongo_translatable", ">= 0"
     gem.files.exclude 'test/kete_test_app'
     gem.test_files.exclude 'test/kete_test_app'

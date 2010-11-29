@@ -3,9 +3,6 @@ require 'test_helper'
 require 'mongo_test_helper'
 
 class MongodbTranslatableTest < ActiveSupport::TestCase
-  #Clear out topictypes
-  TopicType.all.each {|t| t.destroy unless t.id == 1}
-  Factory.create(:topic_type, {:name => "filler", :description => "filler"}) unless TopicType.first
   context "A translation" do
     setup do
       I18n.locale = I18n.default_locale
@@ -146,6 +143,7 @@ class MongodbTranslatableTest < ActiveSupport::TestCase
 
     teardown do
       I18n.locale = @original_locale
+      @topic_type.destroy if @topic_type
     end
   end
 
@@ -176,6 +174,7 @@ class MongodbTranslatableTest < ActiveSupport::TestCase
 
     teardown do
       I18n.locale = @original_locale
+      @topic_type.destroy if @topic_type
     end
   end
 
@@ -207,6 +206,11 @@ class MongodbTranslatableTest < ActiveSupport::TestCase
     should "have needed_in_these_locales method that returns locales that haven't been translated yet" do
       TopicType::Translation.first(:topic_type_id => @topic_type.id, :locale => "zh").destroy
       assert_equal [:zh], @topic_type.needed_in_these_locales.collect { |locale| locale.to_sym }
+    end
+
+    teardown do
+      I18n.locale = @original_locale
+      @topic_type.destroy if @topic_type
     end
   end
 
