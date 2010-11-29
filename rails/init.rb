@@ -2,6 +2,7 @@ require 'mongo_translatable'
 require 'kete_translatable_content'
 require 'kete_translatable_content/extensions/extended_content_translation'
 require 'kete_translatable_content/extensions/translation_from_version'
+require "#{Rails.root}/test/has_value.rb"
 
 config.to_prepare do
 
@@ -52,6 +53,16 @@ config.to_prepare do
       key = File.basename(ext_path, '.rb').to_sym
       Kete.extensions[:blocks][key] ||= Array.new
       Kete.extensions[:blocks][key] << Proc.new { Kernel.load(ext_path) }
+    end
+
+    if Rails.env.test?
+      # tests we update with values that reflect this add-on's features
+      HasValue.overwrites[:blocks] ||= Hash.new
+      Dir[ File.join(File.dirname(__FILE__), '../lib/kete_translatable_content/overwrites/*') ].each do |ext_path|
+        key = File.basename(ext_path, '.rb').to_sym
+        HasValue.overwrites[:blocks][key] ||= Array.new
+        HasValue.overwrites[:blocks][key] << Proc.new { Kernel.load(ext_path) }
+      end
     end
 
     # extend the Generic Muted Worker to have the expire_locale method
