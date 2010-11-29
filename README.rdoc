@@ -47,6 +47,8 @@ It's a good idea to generate the tests and run them before proceeding:
   # Run you normal Kete tests
   $ rake test
 
+Note some tests may fail, as they have functionality that is overridden that will return a different result than the test expects (unit/oai_dc_helpers_test.rb has several). You may want to adjust your tests accordingly.
+
 If the tests run ok, restart your application and it should be ready to use from the web interface.
 
 Your tests should also now include testing for the kete_translatable_content add-on.

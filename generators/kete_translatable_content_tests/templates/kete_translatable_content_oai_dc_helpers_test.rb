@@ -16,7 +16,7 @@ class KeteTranslatableContentOaiDcHelpersTest < ActiveSupport::TestCase
         
         item_for(zoom_class)
 
-        create_translations_for(@item)
+        create_translations_for(@item, [:title, :description])
       end
 
       should "return xml for title in original locale plus all translated titles" do
@@ -27,6 +27,17 @@ class KeteTranslatableContentOaiDcHelpersTest < ActiveSupport::TestCase
         assert builder.to_stripped_xml.include?("<dc:title xml:lang=\"#{I18n.default_locale}\">Item</dc:title>")
         ALL_TRANSLATION_LOCALE_KEYS_EXCEPT_EN.each do |key|
           assert builder.to_stripped_xml.include?("<dc:title xml:lang=\"#{key.to_s}\">#{LOCALE_LABELS[key]}</dc:title>")
+        end
+      end
+
+      should "return xml for description in original locale plus all translated descriptions" do
+        builder = Nokogiri::XML::Builder.new
+        builder.root do |xml|
+          @item.oai_dc_xml_dc_description(xml)
+        end
+        assert builder.to_stripped_xml.include?("<dc:description xml:lang=\"#{I18n.default_locale}\"><![CDATA[Description]]></dc:description>")
+        ALL_TRANSLATION_LOCALE_KEYS_EXCEPT_EN.each do |key|
+          assert builder.to_stripped_xml.include?("<dc:description xml:lang=\"#{key.to_s}\"><![CDATA[#{LOCALE_LABELS[key]}]]></dc:description>")
         end
       end
     end
