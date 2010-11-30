@@ -5,7 +5,60 @@ TranslationsController.class_eval do
 
   after_filter :expire_locale_cache, :only => [:create, :update]
 
+  def edit
+    @translation = @translated.translation_for(params[:id]) || @translatable_class::Translation.find(params[:id])
+    @translation = @translated.translate(:locale => (params[:to_locale] || I18n.locale.to_s)) unless @translation.version.to_i == @translated.version.to_i
+
+    render :template => "translations/versioned_edit"
+  end
+
+  # POST /translations
+  # POST /translations.xml
+  def create
+    translation_params = params[:translation] || params[@translatable_params_name + '_translation']
+    params[:version] ||= params[@translatable_key][:version] if params[@translatable_key]
+    translation_params[:version] = params[:version].to_i if params[:version]
+    @translation = @translatable.translate(translation_params)
+
+    respond_to do |format|
+      if @translation.save
+        flash[:notice] = t('translations.controllers.created')
+        # we redirect to translated object in the new translated version
+        # assumes controller name is tableized version of class
+        format.html { redirect_to url_for_translated }
+        # TODO: adjust :location accordingly for being a nested route
+        format.xml  { render :xml => @translation, :status => :created, :location => @translation }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @translation.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  # PUT /translations/1
+  # PUT /translations/1.xml
+  def update
+    respond_to do |format|
+      translation_params = params[:translation] || params[@translatable_params_name + '_translation']
+      params[:version] ||= params[@translatable_key][:version] if params[@translatable_key]
+      translation_params[:version] = params[:version].to_i if params[:version]
+      if @translation.update_attributes(translation_params)
+        flash[:notice] = t('translations.controllers.updated')
+        format.html { redirect_to url_for_translated }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @translation.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
   private
+
+  def get_translation
+    @translation = @translated.translation_for(params[:id]) || @translatable_class::Translation.find(params[:id])
+    @translation = @translated.translate(:locale => (params[:to_locale] || I18n.locale.to_s)) unless @translation.version.to_i == @translated.version.to_i
+  end
 
   %w{translatable translated}.each do |term|
     define_method("get_" + term) do

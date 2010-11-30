@@ -1,4 +1,6 @@
 en:
+  translations:
+    old: "Old"
   baskets:
     form:
       index_page_extra_side_bar_html: "Homepage Options - Side Bar HTML:"

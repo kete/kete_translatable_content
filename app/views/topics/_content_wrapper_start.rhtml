@@ -18,10 +18,23 @@
         <div id="translate-controls">
           <% version = (current_translatable_record.respond_to?(:version) && current_translatable_record.version) || "" %>
           <% if version.present? -%>
-            <div style="display:inline" id="translations">Available in: <%= raw_locale_links(:params => {:version => version }).join(" | ") -%> </div>
+            <div style="display:inline" id="translations">Available in: 
+              <ul>
+                <% raw_locale_links(:params => {:version => version }).each_with_index do |link, i| -%>
+                  <li<%= "class='first'" if i == 0 -%>>
+                  <%= link[:link]  -%>
+                    <%= "<span class=\"old\"> #{ I18n.t('translations.old')} </span>" if current_translatable_record.translation_for(link[:locale]) &&  current_translatable_record.version.to_i != current_translatable_record.translation_for(link[:locale]).version.to_i %>
+                  </li>
+                  
+                <% end %>
+              </ul>
+            </div>
             <div style="display:inline" id="translate"> <%= translate_link(current_translatable_record, :lightbox => true,  :params => {:version => version}) %> </div>
           <% else -%>
             <%= available_in_locales_for(current_translatable_record) -%>
             <%= needed_in_locales_for(current_translatable_record, :lightbox => true) -%>
+          <% end %>
           </div>
         <% end -%>
+
+        
