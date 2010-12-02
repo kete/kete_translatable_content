@@ -7,8 +7,6 @@ module TranslationFromVersion
 
     # sometimes all you need is only the locales of translations because of versioning we need to split out duplicates
     def translations_locales
-      require 'ruby-debug'
-      debugger
       translations = self.class::Translation.all(self.class.as_foreign_key_sym => id, :select => 'locale')
       uniq_translations = []
       translations.each do |trans|
