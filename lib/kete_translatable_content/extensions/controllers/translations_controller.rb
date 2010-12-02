@@ -7,7 +7,9 @@ TranslationsController.class_eval do
 
   def edit
     @translation = @translated.translation_for(params[:id]) || @translatable_class::Translation.find(params[:id])
-    @translation = @translated.translate(:locale => (params[:to_locale] || I18n.locale.to_s)) unless @translation.version.to_i == @translated.version.to_i
+    if @translated.respond_to?("version")
+      @translation = @translated.translate(:locale => (params[:to_locale] || I18n.locale.to_s)) unless @translation.version.to_i == @translated.version.to_i
+    end
 
     render :template => "translations/versioned_edit"
   end
@@ -57,7 +59,9 @@ TranslationsController.class_eval do
 
   def get_translation
     @translation = @translated.translation_for(params[:id]) || @translatable_class::Translation.find(params[:id])
-    @translation = @translated.translate(:locale => (params[:to_locale] || I18n.locale.to_s)) unless @translation.version.to_i == @translated.version.to_i
+    if @translated.respond_to?("version")
+      @translation = @translated.translate(:locale => (params[:to_locale] || I18n.locale.to_s)) unless @translation.version.to_i == @translated.version.to_i
+    end
   end
 
   %w{translatable translated}.each do |term|
