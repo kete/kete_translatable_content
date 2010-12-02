@@ -40,6 +40,27 @@ class KeteTranslatableContentOaiDcHelpersTest < ActiveSupport::TestCase
           assert builder.to_stripped_xml.include?("<dc:description xml:lang=\"#{key.to_s}\"><![CDATA[#{LOCALE_LABELS[key]}]]></dc:description>")
         end
       end
+
+      should "return xml for tags in original locale plus all translated tags" do
+        @item.tag_list << "tag"
+        @item.save
+        @item.reload
+        @item.add_as_contributor(User.first, @item.version)
+
+        # translate tag
+        tag = @item.tags.first
+        create_translations_for(tag, [:name])
+
+        builder = Nokogiri::XML::Builder.new
+        builder.root do |xml|
+          @item.oai_dc_xml_tags_to_dc_subjects(xml)
+        end
+        assert builder.to_stripped_xml.include?("<dc:subject xml:lang=\"#{I18n.default_locale}\"><![CDATA[tag]]></dc:subject>")
+
+        ALL_TRANSLATION_LOCALE_KEYS_EXCEPT_EN.each do |key|
+          assert builder.to_stripped_xml.include?("<dc:subject xml:lang=\"#{key.to_s}\"><![CDATA[#{LOCALE_LABELS[key]}]]></dc:subject>")
+        end
+      end
     end
   end
 end

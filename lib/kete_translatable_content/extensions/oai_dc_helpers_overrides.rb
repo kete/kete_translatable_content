@@ -73,6 +73,26 @@ module OaiDcHelpersOverrides
           end
         end
 
+        if self.new.respond_to?(:oai_dc_xml_tags_to_dc_subjects)
+          alias_method(:oai_dc_xml_tags_to_dc_subjects_orig, :oai_dc_xml_tags_to_dc_subjects) unless self.new.respond_to?(:oai_dc_xml_tags_to_dc_subjects_orig)
+
+          def oai_dc_xml_tags_to_dc_subjects(xml)
+            tags.each do |tag|
+              # handle original
+              xml.send("dc:subject", "xml:lang" => tag.original_locale) {
+                xml.cdata tag.name
+              }
+
+              # do each translation of tag
+              tag.translations.each do |t|
+                xml.send("dc:subject", "xml:lang" => t.locale) {
+                  xml.cdata t.name
+                }
+              end
+            end
+          end
+        end
+
       end
     end
   end
