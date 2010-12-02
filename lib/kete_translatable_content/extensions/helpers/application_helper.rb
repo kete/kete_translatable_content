@@ -9,7 +9,7 @@ ApplicationHelper.module_eval do
     html += '<div style="display:inline; padding-top: 10px; margin-bottom: -7px;" id="translations">' + I18n.t('translations.available_in')
     html += '<ul class="horizontal-list">'
     
-    raw_locale_links(:params => {:version => version }).each_with_index do |link, i|
+    raw_available_in_locales_links(current_translatable_record, :params => {:version => version }).each_with_index do |link, i|
       html += "<li#{' class="first"' if i == 0 }>"
       html += link[:link]
 
@@ -20,9 +20,11 @@ ApplicationHelper.module_eval do
 
       html += '</li>'
     end
-    html += '<li id="translate">' + translate_link(current_translatable_record,
-                                                   :lightbox => true, 
-                                                   :params => {:version => version}) + '</li>'
+    unless current_translatable_record.original_locale == params[:locale]
+      html += '<li id="translate">' + translate_link(current_translatable_record,
+                                                     :lightbox => true, 
+                                                     :params => {:version => version}) + '</li>'
+    end
     html += '</ul>
             </div>'
     html
