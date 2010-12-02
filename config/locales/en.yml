@@ -1,5 +1,6 @@
 en:
   translations:
+    available_in: "Available in:"
     old: "Old"
   baskets:
     form:
