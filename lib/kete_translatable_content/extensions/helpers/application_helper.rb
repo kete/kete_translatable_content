@@ -15,7 +15,7 @@ ApplicationHelper.module_eval do
 
       if current_translatable_record.translation_for(link[:locale]) &&
           current_translatable_record.version.to_i != current_translatable_record.translation_for(link[:locale]).version.to_i
-        html += '<span class="old">' + I18n.t('translations.old') + '</span>'
+        html += '<sup class="badge">' + I18n.t('translations.old') + '</sup>'
       end
 
       html += '</li>'
