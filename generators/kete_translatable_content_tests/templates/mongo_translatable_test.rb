@@ -76,6 +76,7 @@ class MongodbTranslatableTest < ActiveSupport::TestCase
     should "find topic_type with the proper translation for current locale" do
       translate_topic_type_for_locales(@topic_type, :fi)
 
+      I18n.locale = :fi
       # reloading topic_type should detect current locale and pass back translated version of object
       @topic_type = TopicType.find(@topic_type.id)
 
@@ -87,6 +88,7 @@ class MongodbTranslatableTest < ActiveSupport::TestCase
 
       original_description = @topic_type.description
 
+      I18n.locale = :fi
       # reloading topic_type should detect current locale and pass back translated version of object
       @topic_type = TopicType.find(@topic_type.id)
 
