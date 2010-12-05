@@ -82,14 +82,48 @@ TranslationsController.class_eval do
   #a wider scale if the record is relevant to the global UI.
   def expire_locale_cache
     #Kete items to be cleared individually
+    @translatable = @translation.respond_to?("translatable") ? @translation.translatable : @translation
     if ZOOM_CLASSES.include?(@translatable_class.to_s)
-      expire_show_caches_for(@translation)
+      expire_show_caches_for(@translatable)
+
+      #Clear out the available for_list which may be updated
+      clear_header_fragments_for(@translated)
+      @translated.translations.each do |translation|
+        clear_header_fragments_for(translation.translatable)
+      end
+
       return true
     else
+      expire_all_locale_caches
+    end
+  end
+
+  def clear_header_fragments_for(item)
+    item_class = item.class.name
+    controller = zoom_class_controller(item_class)
+    @privacy_type ||= (item.private? ? "private" : "public")
+    return unless ZOOM_CLASSES.include?(item_class)
+    part = 'details_first_[privacy]'
+    resulting_part = cache_name_for(part, @privacy_type)
+    expire_fragment_for_all_versions_and_locale(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
+  end
+
+  def expire_fragment_for_all_versions_and_locale(item, name = {})
+    #blank title or url_for comes up with something it shouldn't
+    name[:id].title = ""  if name[:id].title
+
+    name = name.merge(:id => item.id)
+    
+    file_path = "#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache"
+    file_path.sub!(@translatable.locale, item.locale)
+    File.delete(file_path) if File.exists?(file_path)
+  end
+
+  def expire_all_locale_caches
       # this is the big hammer for translation clearing # it does the entire locale's cache if a translation changes
       # only use on UI element related models
       # Kete items (i.e. user generated content) should be done on an item by item basis
-      expire_locale = @translation.locale
+      expire_locale = @translatable.locale
       method_name = "clear_locale_cache"
       options = { :locale_to_clear => expire_locale }
 
@@ -102,6 +136,5 @@ TranslationsController.class_eval do
 
       MiddleMan.worker(worker_type, worker_key).async_do_work( :arg => { :method_name => method_name, :options => options } )
       true
-    end
   end
 end
