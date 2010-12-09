@@ -20,7 +20,7 @@ ApplicationHelper.module_eval do
 
       html += '</li>'
     end
-    unless current_translatable_record.original_locale == params[:locale]
+    unless current_translatable_record.original_locale == I18n.locale
       html += '<li id="translate">' + translate_link(current_translatable_record,
                                                      :lightbox => true, 
                                                      :params => {:version => version}) + '</li>'
