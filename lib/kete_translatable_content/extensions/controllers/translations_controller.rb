@@ -4,6 +4,7 @@ TranslationsController.class_eval do
   include WorkerControllerHelpers
 
   after_filter :expire_locale_cache, :only => [:create, :update]
+  after_filter :update_zoom_record_if_applicable, :only => [:create, :update]
 
   def edit
     @translation = @translated.translation_for(params[:id]) || @translatable_class::Translation.find(params[:id])
@@ -83,12 +84,12 @@ TranslationsController.class_eval do
   def expire_locale_cache
     #Kete items to be cleared individually
     @translatable = @translation.respond_to?("translatable") ? @translation.translatable : @translation
-    if ZOOM_CLASSES.include?(@translatable_class.to_s)
+    if ITEM_CLASSES.include?(@translatable_class.to_s)
       expire_show_caches_for(@translatable)
 
       #Clear out the available for_list which may be updated
       clear_header_fragments_for(@translated)
-      @translated.translations.each do |translation|
+      @translatable.translations.each do |translation|
         clear_header_fragments_for(translation.translatable)
       end
 
@@ -136,5 +137,29 @@ TranslationsController.class_eval do
 
       MiddleMan.worker(worker_type, worker_key).async_do_work( :arg => { :method_name => method_name, :options => options } )
       true
+  end
+
+  # filter that will trigger zoom record rebuild for translatable
+  # if translatable.class is in ITEM_CLASSES
+  def update_zoom_record_if_applicable
+    @translatable = @translation.respond_to?("translatable") ? @translation.translatable : @translation
+    if ITEM_CLASSES.include?(@translatable.class.name)
+      rebuild_zoom_for_translatable
+    end
+  end
+
+  def rebuild_zoom_for_translatable
+    method_name = "rebuild_zoom_record_for"
+    options = { :item => @translatable }
+    
+    worker_type = :generic_muted_worker
+    worker_key = worker_key_for("generic_muted_worker_#{method_name}_#{@translatable_class.to_s}_#{@translatable.id}")
+
+    # only allow a single cache clearing to happen at once
+    MiddleMan.new_worker( :worker => worker_type,
+                          :worker_key => worker_key )
+
+    MiddleMan.worker(worker_type, worker_key).async_do_work( :arg => { :method_name => method_name, :options => options } )
+    true
   end
 end

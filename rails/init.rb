@@ -67,7 +67,7 @@ config.to_prepare do
 
     # extend the Generic Muted Worker to have the expire_locale method
     MethodsForGenericMutedWorker.module_eval do
-      def clear_locale_cache(options = { })
+      def clear_locale_cache(options = {})
         locale_to_clear = options[:locale_to_clear]
         raise unless locale_to_clear
         
@@ -76,6 +76,13 @@ config.to_prepare do
         # this will need to be updated with logic to figure out correct clearing mechanism
         file_path = "#{Rails.root}/tmp/cache/views/#{Kete.site_name}/#{locale_to_clear}"
         FileUtils.rm_r(file_path, :force => true) if File.exist?(file_path) && File.directory?(file_path)
+      end
+
+      def rebuild_zoom_record_for(options = {})
+        item = options[:item]
+        raise unless item
+
+        item.prepare_and_save_to_zoom
       end
     end
   end

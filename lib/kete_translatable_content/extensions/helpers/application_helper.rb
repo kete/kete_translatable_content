@@ -32,6 +32,9 @@ ApplicationHelper.module_eval do
     end
     html += '</ul>
             </div>'
+
+    translatable_lightbox_js_and_css
+
     html
   end
 end

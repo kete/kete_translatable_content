@@ -1,4 +1,8 @@
+require File.join(File.dirname(__FILE__), '../zoom_search_overrides')
+
 ApplicationController.class_eval do
+  include ZoomSearchOverrides
+
   def kete_translatable_content?
     controller, controller_as_key, action = params[:controller], params[:controller].singularize, params[:action]
 
