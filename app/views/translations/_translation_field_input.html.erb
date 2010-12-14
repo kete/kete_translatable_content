@@ -5,10 +5,13 @@
 
 <% if translatable_field_a_text_area?(form, attribute_key) %>
   <%
-  is_tiny_mce_editor = false
-  is_tiny_mce_editor = true if form.object.translatable_class == Basket && attribute_key == :index_page_extra_side_bar_html
-  is_tiny_mce_editor = true if form.object.translatable_class == ConfigurableSetting && form.object.translatable.name == 'additional_footer_content'
-  %>
+     is_tiny_mce_editor = false
+     if (ITEM_CLASSES.include?(form.object.translatable_class.name) && attribute_key == :description) ||
+         (form.object.translatable_class == Basket && attribute_key ==  :index_page_extra_side_bar_html) ||
+         (form.object.translatable_class == ConfigurableSetting && form.object.translatable.name == 'additional_footer_content')
+       is_tiny_mce_editor = true
+     end
+   %>
 
   <%= form.text_area attribute_key, :rows => 7, :cols => 35, :class => ("mceEditor" if is_tiny_mce_editor) %>
 
