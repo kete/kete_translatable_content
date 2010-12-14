@@ -28,7 +28,7 @@ TranslationsController.class_eval do
         flash[:notice] = t('translations.controllers.created')
         # we redirect to translated object in the new translated version
         # assumes controller name is tableized version of class
-        format.html { redirect_to url_for_translated }
+        format.html { redirect_to url_for_translated(:locale => I18n.locale) }
         # TODO: adjust :location accordingly for being a nested route
         format.xml  { render :xml => @translation, :status => :created, :location => @translation }
       else
@@ -47,7 +47,7 @@ TranslationsController.class_eval do
       translation_params[:version] = params[:version].to_i if params[:version]
       if @translation.update_attributes(translation_params)
         flash[:notice] = t('translations.controllers.updated')
-        format.html { redirect_to url_for_translated }
+        format.html { redirect_to url_for_translated(:locale => I18n.locale) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
