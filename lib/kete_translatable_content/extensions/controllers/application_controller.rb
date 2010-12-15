@@ -124,4 +124,28 @@ ApplicationController.class_eval do
     oai_dc.xpath(".//dc:#{field_name}",
                  "xmlns:dc" => "http://purl.org/dc/elements/1.1/").first
   end
+
+  before_filter :add_locale_to_attributes_in_params, :only => [:create, :update]
+
+  def add_locale_to_attributes_in_params
+    # only relevant to Kete.translatables
+    # return true if not Kete.translatables
+    params_attributes_key = nil
+    Kete.translatables.keys.each do |key|
+      if params.keys.include?(key)
+        params_attributes_key = key.to_sym
+        break
+      end
+    end
+
+    return true unless params_attributes_key
+
+    if params[params_attributes_key].present?  &&
+        params[params_attributes_key][:locale].blank?
+      params[params_attributes_key][:locale] = I18n.locale
+    end
+    true
+  end
+
+  private :add_locale_to_attributes_in_params
 end
