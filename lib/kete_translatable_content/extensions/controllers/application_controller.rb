@@ -14,7 +14,15 @@ ApplicationController.class_eval do
   helper_method :kete_translatable_content?
 
   def current_translatable_record
-    key = params[:controller].singularize
+    key = case params[:controller]
+          when 'images'
+            'still_image'
+          when 'audio'
+            'audio_recording'
+          else
+            params[:controller].singularize
+          end
+    
     instance_variable_get('@' + key) || @item || @record || key.camelize.constantize.find(params[:id])
   end
   helper_method :current_translatable_record

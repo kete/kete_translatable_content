@@ -48,14 +48,17 @@ audio_recording:
   through_version: true
   translatable_attributes: [:title, :description] # extended content is handled separately
   views: ['show']
+  controllers: ['audio']
 still_image:
   through_version: true
   translatable_attributes: [:title, :description] # extended content is handled separately
   views: ['show']
+  controllers: ['images']
 video:
   through_version: true
   translatable_attributes: [:title, :description] # extended content is handled separately
   views: ['show']
+  controllers: ['video']
 web_link:
   through_version: true
   translatable_attributes: [:title, :description] # extended content is handled separately
