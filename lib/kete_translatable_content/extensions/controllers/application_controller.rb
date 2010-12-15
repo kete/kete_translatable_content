@@ -1,7 +1,4 @@
-require File.join(File.dirname(__FILE__), '../zoom_search_overrides')
-
 ApplicationController.class_eval do
-  include ZoomSearchOverrides
 
   def kete_translatable_content?
     controller, controller_as_key, action = params[:controller], params[:controller].singularize, params[:action]
@@ -111,5 +108,20 @@ ApplicationController.class_eval do
     else
       options.delete(:id) || translated
     end
+  end
+  
+  alias_method(:oai_dc_first_element_for_orig, :oai_dc_first_element_for) unless self.new.respond_to?(:oai_dc_first_element_for_orig)
+  # we override to get the current locale's specific field value
+  # if available
+  def oai_dc_first_element_for(field_name, oai_dc)
+    first_field_element = oai_dc.xpath(".//dc:#{field_name}[@xml:lang=\"#{I18n.locale}\"]",
+                                       "xmlns:dc" => "http://purl.org/dc/elements/1.1/").first
+    
+    # we have a match for the locale, we're done
+    return first_field_element if first_field_element.present?
+      
+    # no match, return first match without lang specified
+    oai_dc.xpath(".//dc:#{field_name}",
+                 "xmlns:dc" => "http://purl.org/dc/elements/1.1/").first
   end
 end
