@@ -19,6 +19,8 @@
             <%= available_in_locales_for(current_translatable_record) -%>
             <%= needed_in_locales_for(current_translatable_record, :lightbox => true) -%>
         </div>
+      <% elsif %w(topics images video audio documents web_links).include?(params[:controller]) && kete_translatable_content? -%>
+        <%= combined_tranlation_links -%>
       <% end -%>
 
         

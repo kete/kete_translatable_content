@@ -3,10 +3,10 @@ ApplicationHelper.module_eval do
     field_or_choice.label_translation_for(I18n.locale) || field_or_choice.label
   end
 
-  def extras_after_title_headline
+  def combined_tranlation_links
     version = (current_translatable_record.respond_to?(:version) && current_translatable_record.version)
     html = ''
-    html += '<div style="display:inline; padding-top: 10px; margin-bottom: -7px;" id="translations">' + I18n.t('translations.available_in')
+    html += '<div class="content-wrapper-submenu" id="translations">' + I18n.t('translations.available_in')
     html += '<ul class="horizontal-list">'
     
     available_locale_links = raw_available_in_locales_links(current_translatable_record, :params => {:version => version })
@@ -25,11 +25,32 @@ ApplicationHelper.module_eval do
 
       html += '</li>'
     end
-    if current_translatable_record.original_locale != I18n.locale && !available_locales.include?(I18n.locale.to_s)
+
+    if current_translatable_record.original_locale != I18n.locale &&
+        !available_locales.include?(I18n.locale.to_s)
       html += '<li id="translate">' + translate_link(current_translatable_record,
                                                      :lightbox => true, 
                                                      :params => {:version => version}) + '</li>'
+    elsif current_translatable_record.original_locale == I18n.locale && available_locales.size == 1
+      other_locales = TranslationsHelper::available_locales.keys - [current_translatable_record.original_locale]
+
+      html += '<li id="translate">' + translate_link(current_translatable_record,
+                                               :lightbox => true, 
+                                               :params => {:version => version,
+                                                       :to_locale => other_locales.first}) + '</li>'
     end
+
+    translations_params = Hash.new
+    params.each do |k,v|
+      translations_params[k] = v unless %w(action controller id).include?(k.to_s)
+    end
+
+    manage_links = manage_translations_links_for(current_translatable_record,
+                                                 available_locales - [current_translatable_record.original_locale],
+                                                 { :params => translations_params })
+
+    html += '<li id="manage-translations">(' + manage_links + ')</li>' if manage_links.present? && @at_least_a_moderator
+
     html += '</ul>
             </div>'
 
