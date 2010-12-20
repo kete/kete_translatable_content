@@ -2,7 +2,9 @@
 
   <td colspan="2" class="original_label_and_value" valign="top" style="padding: 5px;">
     <%= h(untranslated_value[:localized_label]) -%><br />
-    <% if untranslated_value[:attribute_key] == :description -%>
+    <% if [:description,
+       :index_page_extra_side_bar_html].include?(untranslated_value[:attribute_key]) ||
+       (form.object.translatable_class == ConfigurableSetting && form.object.translatable.name == 'additional_footer_content') -%>
       <%= untranslated_value[:value] -%>
     <% else -%>
       <%= h(untranslated_value[:value]) -%>
