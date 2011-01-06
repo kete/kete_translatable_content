@@ -17,16 +17,31 @@ config.to_prepare do
         :through_version => options["through_version"]}
       
       class_name = name.camelize
+      klass = class_name.constantize
+      klass.send(*args)
 
-      class_name.constantize.send(*args)
+      trans_class_name = class_name + "::Translation"
+      trans_klass = trans_class_name.constantize
 
       if options["through_version"]
-        class_name.constantize.send :include, TranslationFromVersion
-        trans_class = class_name + "::Translation"
-        trans_class.constantize.send :update_keys_if_necessary_with, [:version]
+        klass.send :include, TranslationFromVersion
+        trans_klass.send :update_keys_if_necessary_with, [:version]
+
+        trans_klass.ensure_index([[trans_klass.translatable_class.as_foreign_key_sym,
+                                   Mongo::ASCENDING],
+                                  [:version, Mongo::ASCENDING],
+                                  [:locale, Mongo::ASCENDING]],
+                                 :background => true,
+                                 :unique => true)
+      else
+
+        trans_klass.ensure_index([[trans_klass.translatable_class.as_foreign_key_sym,
+                                   Mongo::ASCENDING],
+                                  [:locale, Mongo::ASCENDING]],
+                                 :background => true,
+                                 :unique => true)
+
       end
-
-
     end
 
     # precedence over a plugin or gem's (i.e. an engine's) app/views
