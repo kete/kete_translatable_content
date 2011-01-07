@@ -26,16 +26,18 @@ ApplicationHelper.module_eval do
       html += '</li>'
     end
 
+    lightbox = logged_in? ? true : false
+
     if current_translatable_record.original_locale != I18n.locale &&
         !available_locales.include?(I18n.locale.to_s)
       html += '<li id="translate">' + translate_link(current_translatable_record,
-                                                     :lightbox => true, 
+                                                     :lightbox => lightbox, 
                                                      :params => {:version => version}) + '</li>'
     elsif current_translatable_record.original_locale == I18n.locale && available_locales.size == 1
       other_locales = TranslationsHelper::available_locales.keys - [current_translatable_record.original_locale]
 
       html += '<li id="translate">' + translate_link(current_translatable_record,
-                                               :lightbox => true, 
+                                               :lightbox => lightbox, 
                                                :params => {:version => version,
                                                        :to_locale => other_locales.first}) + '</li>'
     end
