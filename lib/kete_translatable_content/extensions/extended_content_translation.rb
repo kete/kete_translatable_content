@@ -11,6 +11,8 @@ module ExtendedContentTranslation
 
       #Send define method because scopes are not playing nicely together
       base.send(:define_method, :translatable_attributes) do
+        return @translatable_attributes if @translatable_attributes.present?
+
         # klass is ::Version classes parent namespace wise
         klass = self.class
 
@@ -24,10 +26,11 @@ module ExtendedContentTranslation
 
           update_translation_for_methods_if_necessary_with(type_translatable_attributes)
 
-          return self.class.translatable_attributes + type_translatable_attributes
+          @translatable_attributes = self.class.translatable_attributes + type_translatable_attributes
         else
-          return self.class.translatable_attributes
+          @translatable_attributes = self.class.translatable_attributes
         end
+        @translatable_attributes
       end
     end
   end

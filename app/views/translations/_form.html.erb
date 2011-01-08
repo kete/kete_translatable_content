@@ -23,9 +23,11 @@
     </th>
   </tr>
 
+  <% @untranslated_values_with_localized_labels =  untranslated_values_with_localized_labels -%>
+  <% debug(@untranslated_values_with_localized_labels) -%>
   <% translatable_attributes.each do |attribute_key| %>
     <tr>
-      <% untranslated_value = untranslated_values_with_localized_labels.find { |l| l[:attribute_key] == attribute_key }
+      <% untranslated_value = @untranslated_values_with_localized_labels.find { |l| l[:attribute_key] == attribute_key }
       locals = { :form => form, :untranslated_value => untranslated_value } %>
       <%= render 'translatable_value', locals %>
       <% if untranslated_value[:value].present? -%>
