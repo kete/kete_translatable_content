@@ -19,7 +19,8 @@ module ExtendedContentTranslation
         type = klass == Topic ? topic_type : ContentType.find_by_class_name(klass.name)
 
         if type
-          fields = type.mapped_fields.select { |f| ['text', 'textarea', 'choice', 'autocomplete'].include?(f.ftype) }
+          # fields = type.mapped_fields.select { |f| ['text', 'textarea', 'choice', 'autocomplete'].include?(f.ftype) }
+          fields = type.mapped_fields.select { |f| ['text', 'textarea',].include?(f.ftype) }
           type_translatable_attributes = fields.collect { |f| f.label_for_params.to_sym }
 
           klass::Translation.update_keys_if_necessary_with(type_translatable_attributes)
