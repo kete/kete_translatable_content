@@ -3,11 +3,11 @@
 module TranslationFromVersion
   unless included_modules.include? TranslationFromVersion
 
-
-
-    # sometimes all you need is only the locales of translations because of versioning we need to split out duplicates
+    # sometimes all you need is only the locales of translations
+    # because of versioning we need to split out duplicates
     def translations_locales
-      translations = self.class::Translation.all(self.class.as_foreign_key_sym => id, :select => 'locale')
+      translations = self.class::Translation.all(self.class.as_foreign_key_sym => id,
+                                                 :select => 'locale')
       uniq_translations = []
       translations.each do |trans|
         uniq_translations << trans unless uniq_translations.collect(&:locale).include?(trans.locale)
@@ -15,10 +15,13 @@ module TranslationFromVersion
       uniq_translations
     end
 
-    #Get the current translation or the latest
+    # Get the current translation or the latest
     def translation_for(locale)
-      translation = self.class::Translation.first(self.class.as_foreign_key_sym => id, :locale => locale, :version => self.version.to_s)
-      translation ||= self.class::Translation.first(self.class.as_foreign_key_sym => id, :locale => locale)
+      translation = self.class::Translation.first(self.class.as_foreign_key_sym => id,
+                                                  :locale => locale,
+                                                  :version => self.version.to_s)
+      translation ||= self.class::Translation.first(self.class.as_foreign_key_sym => id,
+                                                    :locale => locale)
       return translation
     end
 
@@ -33,10 +36,9 @@ module TranslationFromVersion
       })
 
       if translation_locale.to_s == original_locale.to_s
-        # TODO: locale's emptiness is the reported error
-        # when this is triggered, figure out why
-        # serving its purpose though to prevent a translation to be added for original_locale
-        @translation.errors.replace(:locale, "Cannot add translation the same as the original locale.")
+        # prevent a translation to be added for original_locale
+        @translation.errors.replace(:locale,
+                                    "Cannot add translation the same as the original locale.")
       else
         # work through self and replace attributes
         # with the passed in translations for defined translatable_attributes
