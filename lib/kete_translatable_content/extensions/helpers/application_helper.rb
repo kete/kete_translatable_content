@@ -10,17 +10,22 @@ ApplicationHelper.module_eval do
     html += '<ul class="horizontal-list">'
     
     available_locale_links = raw_available_in_locales_links(current_translatable_record, :params => {:version => version })
+
     available_locales = available_locale_links.collect { |link| link[:locale].to_s }
 
     available_locale_links.each_with_index do |link, i|
       html += "<li#{' class="first"' if i == 0 }>"
       html += link[:link]
 
-      if current_translatable_record.translation_for(link[:locale]) &&
-          current_translatable_record.version.to_i != current_translatable_record.translation_for(link[:locale]).version.to_i
-        html += '<sup class="badge">' + I18n.t('translations.old') + '</sup>'
-        # drop locale from available_locales, so we get the translate link
-        available_locales.delete(link[:locale].to_s)
+      unless link[:locale] == current_translatable_record.original_locale
+        record_translation_for_locale = current_translatable_record.translation_for(link[:locale])
+
+        if record_translation_for_locale &&
+            current_translatable_record.version.to_i > record_translation_for_locale.version.to_i
+          html += '<sup class="badge">' + I18n.t('translations.old') + '</sup>'
+          # drop locale from available_locales, so we get the translate link
+          available_locales.delete(link[:locale].to_s)
+        end
       end
 
       html += '</li>'

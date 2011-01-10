@@ -3,6 +3,14 @@
 module TranslationFromVersion
   unless included_modules.include? TranslationFromVersion
 
+    # because of versioning, we may have an old version that is the same locale
+    # as original, modified to handle this case
+    def available_in_these_locales
+      locales = translations_locales.collect(&:locale)
+      locales.delete(original_locale)
+      [original_locale] + locales
+    end
+
     # sometimes all you need is only the locales of translations
     # because of versioning we need to split out duplicates
     def translations_locales
