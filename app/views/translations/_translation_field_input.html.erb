@@ -1,7 +1,13 @@
 <%# Override to add the mceEditor class to the textarea tag for certain fields %>
 
 <%# assign the value of the untranslated field if this record is a new object %>
-<% form.object.send("#{attribute_key}=", untranslated_value[:value]) if form.object.new_record? %>
+<% if form.object.new_record?
+     if @old_translation.present?
+       form.object.send("#{attribute_key}=", @old_translation.send(attribute_key))
+     else
+       form.object.send("#{attribute_key}=", untranslated_value[:value])
+     end
+   end -%>
 
 <% if translatable_field_a_text_area?(form, attribute_key) %>
   <%

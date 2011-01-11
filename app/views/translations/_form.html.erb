@@ -23,8 +23,9 @@
     </th>
   </tr>
 
-  <% @untranslated_values_with_localized_labels =  untranslated_values_with_localized_labels -%>
-  <% debug(@untranslated_values_with_localized_labels) -%>
+  <% @untranslated_values_with_localized_labels =  untranslated_values_with_localized_labels
+     @old_translation = translatable.translation_for(params[:to_locale]) -%>
+
   <% translatable_attributes.each do |attribute_key| %>
     <tr>
       <% untranslated_value = @untranslated_values_with_localized_labels.find { |l| l[:attribute_key] == attribute_key }
