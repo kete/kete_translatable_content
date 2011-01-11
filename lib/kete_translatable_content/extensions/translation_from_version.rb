@@ -51,12 +51,22 @@ module TranslationFromVersion
       # revert_to version and return that
       unless translation
         version = versions.find_by_locale(locale)
-        if version
+        if version.present?
+          # if attribute is an extended field
+          # doing a direct call on the version won't work
+          # so instantiating a tempory dummy item
+          dummy_attributes = version.attributes
+          dummy_attributes.delete(self.class.as_foreign_key_sym.to_s)
+          dummy_attributes.delete('id')
+          dummy = self.class.new(dummy_attributes)
+
           translatable_attributes_from_version = Hash.new
           translatable_attributes.each do |attr|
-            translatable_attributes_from_version[attr] = version.send(attr)
+            translatable_attributes_from_version[attr] = dummy.send(attr)
           end
           
+          dummy = nil
+
           translatable_attributes_from_version[:locale] = locale
 
           translation = self.class::Translation.new(translatable_attributes_from_version)
