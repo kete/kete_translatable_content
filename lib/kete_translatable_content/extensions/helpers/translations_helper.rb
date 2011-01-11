@@ -42,7 +42,6 @@ TranslationsHelper.module_eval do
       return existing_value if existing_value.present?
 
       new_value = @original.translatable_attributes.collect do |attribute_key|
-        logger.debug("inside un/translated for attribute key: " + attribute_key.inspect + " and term is " + term.inspect)
         attribute_key = check_for_value_hash(attribute_key)
         value = (term == 'untranslated') ? @original.send(attribute_key) : @translation[attribute_key]
         { :attribute_key => attribute_key,
