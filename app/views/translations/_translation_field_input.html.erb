@@ -1,13 +1,25 @@
+<% is_multiple = false
+   class_key = form.object.translatable.class.as_foreign_key_sym.to_s.sub('_id', '')
+   multiple_field_name = class_key + '_translation' + "[#{attribute_key}][]"
+   starting_value = nil
+-%>
+
 <%# Override to add the mceEditor class to the textarea tag for certain fields %>
 
 <%# assign the value of the untranslated field if this record is a new object %>
 <% if form.object.new_record?
      if @old_translation.present?
-       form.object.send("#{attribute_key}=", @old_translation.send(attribute_key))
+       starting_value = @old_translation.send(attribute_key)
      else
-       form.object.send("#{attribute_key}=", untranslated_value[:value])
+       starting_value = untranslated_value[:value]
      end
-   end -%>
+     
+     is_multiple = true if starting_value.is_a?(Array)
+
+     form.object.send("#{attribute_key}=", starting_value)
+
+   end 
+-%>
 
 <% if translatable_field_a_text_area?(form, attribute_key) %>
   <%
@@ -19,12 +31,28 @@
      end
    %>
 
-  <%= form.text_area attribute_key, :rows => 7, :cols => 35, :class => ("mceEditor" if is_tiny_mce_editor) %>
+  <% if is_multiple -%>
+    <%  starting_value.each do |instance_value| -%>
+      <%= text_area_tag multiple_field_name,
+  	  instance_value,
+	  :rows => 7, :cols => 35, :class => ("mceEditor" if is_tiny_mce_editor) %>
+      <% end -%>
+  <% else -%>
+    <%= form.text_area attribute_key, :rows => 7, :cols => 35, :class => ("mceEditor" if is_tiny_mce_editor) %>
+  <% end -%>
 
   <% if request.xhr? && is_tiny_mce_editor && !@tiny_mce_editor_initialized %>
     <%= tiny_mce_init %>
     <% @tiny_mce_editor_initialized = true %>
   <% end %>
+
 <% else %>
-  <%= form.text_field attribute_key %>
+
+  <% if is_multiple -%>
+    <%  starting_value.each do |instance_value| -%>
+      <%= text_field_tag multiple_field_name, instance_value %>
+    <% end -%>
+  <% else -%>
+    <%= form.text_field attribute_key %>
+  <% end -%>
 <% end %>

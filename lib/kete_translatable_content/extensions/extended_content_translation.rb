@@ -21,13 +21,28 @@ module ExtendedContentTranslation
         if type
           # fields = type.mapped_fields.select { |f| ['text', 'textarea', 'choice', 'autocomplete'].include?(f.ftype) }
           fields = type.mapped_fields.select { |f| ['text', 'textarea',].include?(f.ftype) }
-          type_translatable_attributes = fields.collect { |f| f.label_for_params.to_sym }
+
+          type_translatable_attributes = fields.collect do |f|
+            unless f.multiple
+              f.label_for_params.to_sym
+            else
+              [f.label_for_params.to_sym, Array]
+            end
+          end
 
           klass::Translation.update_keys_if_necessary_with(type_translatable_attributes)
 
           update_translation_for_methods_if_necessary_with(type_translatable_attributes)
 
-          @translatable_attributes = self.class.translatable_attributes + type_translatable_attributes
+          type_translatable_attribute_keys_only = type_translatable_attributes.collect do |a|
+            if a.is_a?(Array)
+              a[0]
+            else
+              a
+            end
+          end
+
+          @translatable_attributes = self.class.translatable_attributes + type_translatable_attribute_keys_only
         else
           @translatable_attributes = self.class.translatable_attributes
         end
