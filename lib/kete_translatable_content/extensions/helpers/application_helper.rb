@@ -1,6 +1,8 @@
 ApplicationHelper.module_eval do
   # lighboxes only used when user is logged in
-  alias lightbox? logged_in?
+  def lightbox?
+    logged_in?
+  end
 
   def tags_for(item)
     html_string = String.new
@@ -72,7 +74,7 @@ ApplicationHelper.module_eval do
       other_locales = TranslationsHelper::available_locales.keys - [current_translatable_record.original_locale]
 
       html += '<li id="translate">' + translate_link(current_translatable_record,
-                                                     :lightbox => lightbox,
+                                                     :lightbox => lightbox?,
                                                      :action => 'new',
                                                      :params => {:version => version,
                                                        :to_locale => other_locales.first}) + '</li>'
