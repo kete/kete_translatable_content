@@ -94,6 +94,18 @@ TranslationsController.class_eval do
       end
 
       return true
+    elsif @translatable.is_a?(Tag)
+      # we need to expire the tag part
+      # for everything with that tag
+      @translatable.taggings.each do |tagging|
+        item = tagging.taggable
+        controller = zoom_class_controller(item.class.name)
+        part = 'secondary_content_tags_[privacy]'
+        resulting_part = cache_name_for(part, 'public')
+        expire_fragment_for_all_versions_and_locale(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
+        resulting_part = cache_name_for(part, 'private')
+        expire_fragment_for_all_versions_and_locale(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
+      end
     else
       expire_all_locale_caches
     end
@@ -103,7 +115,7 @@ TranslationsController.class_eval do
     item_class = item.class.name
     controller = zoom_class_controller(item_class)
     @privacy_type ||= (item.private? ? "private" : "public")
-    return unless ZOOM_CLASSES.include?(item_class)
+    return unless ITEM_CLASSES.include?(item_class)
     part = 'details_first_[privacy]'
     resulting_part = cache_name_for(part, @privacy_type)
     expire_fragment_for_all_versions_and_locale(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })

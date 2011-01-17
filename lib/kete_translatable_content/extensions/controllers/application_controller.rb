@@ -78,6 +78,15 @@ ApplicationController.class_eval do
         controller = key.pluralize
       end
     end
+
+    if controller == 'tags'
+      if session[:original_item_return_to] && params[:action] == 'create'
+        url_parts = session[:original_item_return_to].split('/')
+        matching_parts = url_parts.select { |part| item_controllers.include?(part) }
+        controller = matching_parts.first
+      end
+    end
+
     controller
   end
 
@@ -110,9 +119,16 @@ ApplicationController.class_eval do
     translated = options.delete(:translated) || @translated || options.delete(:translatable) || @translatable
 
     case translated.class.name
-    when 'SystemSetting'       then nil
-    when 'Feed'                then translated.basket_id
+    when 'SystemSetting' then nil
+    when 'Feed' then translated.basket_id
     when 'ConfigurableSetting' then translated.configurable_id
+    when 'Tag'
+      if session[:original_item_return_to] && params[:action] == 'create'
+        id_segment = session[:original_item_return_to].split('/').last
+        id = id_segment.include?('?') ? id_segment.split('?').first : id_segment
+      else
+        options.delete(:id) || translated
+      end
     else
       options.delete(:id) || translated
     end
@@ -131,6 +147,13 @@ ApplicationController.class_eval do
     # no match, return first match without lang specified
     oai_dc.xpath(".//dc:#{field_name}",
                  "xmlns:dc" => "http://purl.org/dc/elements/1.1/").first
+  end
+
+  before_filter :set_original_item_return_to, :only => :show
+  def set_original_item_return_to
+    if item_controllers.include?(params[:controller])
+      session[:original_item_return_to] = request.request_uri
+    end
   end
 
   before_filter :add_locale_to_attributes_in_params, :only => [:create, :update]

@@ -1,4 +1,33 @@
 ApplicationHelper.module_eval do
+
+  def tags_for(item)
+    html_string = String.new
+
+    return html_string if item.tags.blank?
+
+    html_string = "<p>#{t('application_helper.tags_for.tags')} "
+    item_tags = item.tags
+    logger.debug("what are item_tags: " + item_tags.inspect)
+    item_tags.each_with_index do |tag,index|
+      html_string += link_to_tagged(tag, item.class.name)
+
+      # all we need to know is whether this tag is in the I18n.locale
+      # if not, provide translate link
+      unless tag.locale == I18n.locale
+        html_string += '<sup class="badge">' +
+          translate_link(tag,
+                         :lightbox => true,
+                         :action => 'new') +
+          '</sup>'
+      end
+
+      html_string += ", " unless item_tags.size == (index + 1)
+    end
+    html_string += "</p>"
+
+    html_string
+  end
+
   def display_label_for(field_or_choice)
     field_or_choice.label_translation_for(I18n.locale) || field_or_choice.label
   end
