@@ -15,12 +15,15 @@ ApplicationHelper.module_eval do
     item_tags.each_with_index do |tag,index|
       html_string += link_to_tagged(tag, item.class.name)
 
+      # since tags-list is cached,
+      # we have to assume the user is logged out, use false for lightbox
+
       # all we need to know is whether this tag is in the I18n.locale
       # if not, provide translate link
       unless tag.locale == I18n.locale
         html_string += '<sup class="badge">' +
           translate_link(tag,
-                         :lightbox => lightbox?,
+                         :lightbox => false,
                          :action => 'new') +
           '</sup>'
       end
