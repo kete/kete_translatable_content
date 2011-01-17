@@ -1,4 +1,6 @@
 ApplicationHelper.module_eval do
+  # lighboxes only used when user is logged in
+  alias lightbox? logged_in?
 
   def tags_for(item)
     html_string = String.new
@@ -7,7 +9,7 @@ ApplicationHelper.module_eval do
 
     html_string = "<p>#{t('application_helper.tags_for.tags')} "
     item_tags = item.tags
-    logger.debug("what are item_tags: " + item_tags.inspect)
+
     item_tags.each_with_index do |tag,index|
       html_string += link_to_tagged(tag, item.class.name)
 
@@ -16,7 +18,7 @@ ApplicationHelper.module_eval do
       unless tag.locale == I18n.locale
         html_string += '<sup class="badge">' +
           translate_link(tag,
-                         :lightbox => true,
+                         :lightbox => lightbox?,
                          :action => 'new') +
           '</sup>'
       end
@@ -60,12 +62,10 @@ ApplicationHelper.module_eval do
       html += '</li>'
     end
 
-    lightbox = logged_in? ? true : false
-
     if current_translatable_record.original_locale != I18n.locale &&
         !available_locales.include?(I18n.locale.to_s)
       html += '<li id="translate">' + translate_link(current_translatable_record,
-                                                     :lightbox => lightbox,
+                                                     :lightbox => lightbox?,
                                                      :action => 'new',
                                                      :params => {:version => version}) + '</li>'
     elsif current_translatable_record.original_locale == I18n.locale && available_locales.size == 1
