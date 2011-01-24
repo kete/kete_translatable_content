@@ -101,4 +101,10 @@ ApplicationHelper.module_eval do
 
     html
   end
+
+  def add_ons_item_form_beginning(form=nil)
+    return unless form
+    locale_dropdown(form, :default => I18n.locale) 
+  end
+  
 end
