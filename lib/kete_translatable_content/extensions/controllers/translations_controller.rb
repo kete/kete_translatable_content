@@ -99,6 +99,10 @@ TranslationsController.class_eval do
       # for everything with that tag
       @translatable.taggings.each do |tagging|
         item = tagging.taggable
+
+        # sort of redundent, but achieves what we want
+        item.locale = @translatable.locale
+
         controller = zoom_class_controller(item.class.name)
         part = 'secondary_content_tags_[privacy]'
         resulting_part = cache_name_for(part, 'public')
@@ -128,7 +132,7 @@ TranslationsController.class_eval do
     name = name.merge(:id => item.id)
     
     file_path = "#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache"
-    file_path.sub!(@translatable.locale, item.locale)
+    file_path.sub!("\/#{@translatable.locale}\/", "\/#{item.locale}\/")
     File.delete(file_path) if File.exists?(file_path)
   end
 

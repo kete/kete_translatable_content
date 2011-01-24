@@ -179,4 +179,24 @@ ApplicationController.class_eval do
   end
 
   private :add_locale_to_attributes_in_params
+
+  # modified to delete all locales' caches
+  def expire_fragment_for_all_versions(item, name = {})
+    name = name.merge(:id => item.id)
+    file_path = "#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache"
+    
+    possible_locales = item.available_in_these_locales
+
+    starting_locale = possible_locales.select { |locale| file_path.include?("\/#{locale}\/") }.first
+
+    possible_locales.each do |locale|
+      with_locale_file_path = file_path
+
+      with_locale_file_path = file_path.sub("\/#{starting_locale}\/", "\/#{locale}\/") unless starting_locale == locale
+
+      File.delete(with_locale_file_path) if File.exists?(with_locale_file_path)
+    end
+    
+  end
+
 end
