@@ -3,6 +3,8 @@ TranslationsController.class_eval do
 
   include WorkerControllerHelpers
 
+  before_filter :params_version_to_latest_if_necessary, :only => :new
+
   after_filter :expire_locale_cache, :only => [:create, :update]
   after_filter :update_zoom_record_if_applicable, :only => [:create, :update]
 
@@ -177,5 +179,11 @@ TranslationsController.class_eval do
 
     MiddleMan.worker(worker_type, worker_key).async_do_work( :arg => { :method_name => method_name, :options => options } )
     true
+  end
+  
+  # default to latest version, unless it is passed in
+  # private versions should pass version
+  def params_version_to_latest_if_necessary
+    params[:version] = @translatable.version unless params[:version].present?
   end
 end
