@@ -70,11 +70,27 @@ TranslationsController.class_eval do
   %w{translatable translated}.each do |term|
     define_method("get_" + term) do
       params[:version] ||= params[@translatable_key][:version] if params[@translatable_key]
-      if params[:version]
-        value = @translatable_class.find(params[@translatable_key])
-        value.revert_to(params[:version].to_i)
-      else
-        value = @translatable_class.find(params[@translatable_key])
+
+      value = @translatable_class.find(params[@translatable_key])
+
+      value.revert_to(params[:version].to_i) if params[:version]
+
+      # handle case of editing translation from another locale than original
+      # unfortunately requires reloading of object
+      if value.locale != value.original_locale &&
+          params[:controller] == 'translations' &&
+          params[:action] == 'edit'
+
+        starting_locale = I18n.locale 
+        I18n.locale = value.original_locale
+
+        if params[:version]
+          value.revert_to(params[:version].to_i)
+        else
+          value.reload
+        end
+
+        I18n.locale = starting_locale
       end
 
       instance_variable_set("@" + term, value)
