@@ -25,7 +25,15 @@ TranslationsHelper.module_eval do
 
       @localized_labels[attribute_key] = display_label_for(ef)
     else
-      @localized_labels[attribute_key] = t(@translatable_class.name.tableize + '.' + 'form' + '.' + attribute_key.to_s)
+      form_key = '.' + 'form' + '.'
+      
+      if ITEM_CLASSES.include?(@translatable_class.name)
+        form_key = 'topics' + form_key
+      else
+        form_key = @translatable_class.name.tableize + form_key
+      end
+
+      @localized_labels[attribute_key] = t(form_key + attribute_key.to_s)
     end
 
     @localized_labels[attribute_key]
