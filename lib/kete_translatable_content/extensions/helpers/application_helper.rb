@@ -101,7 +101,19 @@ ApplicationHelper.module_eval do
                                                  available_locales - [current_translatable_record.original_locale],
                                                  { :params => translations_params })
 
-    html += '<li id="manage-translations">(' + manage_links + ')</li>' if manage_links.present? && @at_least_a_moderator
+    
+    if manage_links.present? && logged_in?
+      # drop the 'delete' link unless a moderator or above
+      # a little brittle, as it relies on knowledge that ( edit | delete ) html
+      # as returned by helper method has | when (edit | delete) rather than manage
+      unless @at_least_a_moderator && manage_links.include?('|')
+
+        # only moderators and above can have access to 'delete'
+        manage_links = ' ' + manage_links.split('|')[0]
+      end
+
+      html += '<li id="manage-translations">(' + manage_links + ')</li>' 
+    end
 
     html += '</ul>
             </div>'
@@ -115,5 +127,30 @@ ApplicationHelper.module_eval do
     return unless form
     locale_dropdown(form, :default => I18n.locale) 
   end
-  
+
+  # redefining, because under certain circumstances
+  # user should get a confirm dialog before going to edit page
+  def link_to_edit_for(item)
+    t_key = t("topics.actions_menu.edit")
+
+
+    args = ["<span class=\"edit-link\">#{t_key}</span>",
+            { :action => :edit,
+              :id => item,
+              :private => params[:private]}]
+    
+    additional_options = { :tabindex => '1' }
+    
+    # translation for this locale exists,
+    # but it isn't the original locale
+    if item.original_locale != I18n.locale &&
+        item.available_in_these_locales.include?(I18n.locale)
+
+        additional_options[:confirm] = t('translations.are_you_sure_for_item_edit')
+    end
+
+    args << additional_options
+
+    link_to(*args)
+  end
 end

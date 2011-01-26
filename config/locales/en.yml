@@ -2,6 +2,7 @@ en:
   translations:
     available_in: "Available in:"
     old: "Old"
+    are_you_sure_for_item_edit: "Are you sure you would like to edit this item?\n\nIf you would like to edit the item's translation, please use the 'edit' link by the translation's language name instead."
   baskets:
     form:
       index_page_extra_side_bar_html: "Homepage Options - Side Bar HTML:"
