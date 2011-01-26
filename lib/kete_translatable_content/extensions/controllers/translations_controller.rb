@@ -200,6 +200,8 @@ TranslationsController.class_eval do
   # default to latest version, unless it is passed in
   # private versions should pass version
   def params_version_to_latest_if_necessary
-    params[:version] = @translatable.version unless params[:version].present?
+    if params[:version].blank? && @translatable.respond_to?(:version)
+      params[:version] = @translatable.version
+    end
   end
 end
