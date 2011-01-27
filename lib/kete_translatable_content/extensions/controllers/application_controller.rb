@@ -185,7 +185,7 @@ ApplicationController.class_eval do
     name = name.merge(:id => item.id)
     file_path = "#{RAILS_ROOT}/tmp/cache/#{fragment_cache_key(name).gsub(/(\?|:)/, '.')}.cache"
     
-    possible_locales = item.available_in_these_locales
+    possible_locales = item.respond_to?(:available_in_these_locales) ? item.available_in_these_locales : TranslationsHelper::available_locales.keys
 
     starting_locale = possible_locales.select { |locale| file_path.include?("\/#{locale}\/") }.first
 
