@@ -38,7 +38,7 @@
 	  :rows => 7, :cols => 35, :class => ("mceEditor" if is_tiny_mce_editor) %>
       <% end -%>
   <% else -%>
-    <%= form.text_area attribute_key, :rows => 7, :cols => 35, :class => ("mceEditor" if is_tiny_mce_editor) %>
+    <%= form.text_area attribute_key, :rows => 35, :cols => 60, :class => ("mceEditor" if is_tiny_mce_editor) %>
   <% end -%>
 
   <% if request.xhr? && is_tiny_mce_editor && !@tiny_mce_editor_initialized %>
