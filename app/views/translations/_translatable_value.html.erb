@@ -8,7 +8,7 @@
     <% if [:description,
        :index_page_extra_side_bar_html].include?(untranslated_value[:attribute_key]) ||
        (form.object.translatable_class == ConfigurableSetting && form.object.translatable.name == 'additional_footer_content') -%>
-      <%= value -%>
+      <%= value = sanitize(value) -%>
     <% else -%>
       <% if is_multiple -%>
         <% values = value.collect { |v| h(v) } -%>
