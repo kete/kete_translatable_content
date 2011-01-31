@@ -24,10 +24,13 @@
 <% if translatable_field_a_text_area?(form, attribute_key) %>
   <%
      is_tiny_mce_editor = false
+     dimensions = {:height => 7, :width => 35 }
      if (ITEM_CLASSES.include?(form.object.translatable_class.name) && attribute_key == :description) ||
          (form.object.translatable_class == Basket && attribute_key ==  :index_page_extra_side_bar_html) ||
          (form.object.translatable_class == ConfigurableSetting && form.object.translatable.name == 'additional_footer_content')
        is_tiny_mce_editor = true
+       dimensions[:height] = 35
+       dimensions[:width] = 40
      end
    %>
 
@@ -35,10 +38,10 @@
     <%  starting_value.each do |instance_value| -%>
       <%= text_area_tag multiple_field_name,
   	  instance_value,
-	  :rows => 7, :cols => 35, :class => ("mceEditor" if is_tiny_mce_editor) %>
+	  :rows => dimensions[:height], :cols => dimensions[:width], :class => ("mceEditor" if is_tiny_mce_editor) %>
       <% end -%>
   <% else -%>
-    <%= form.text_area attribute_key, :rows => 35, :cols => 60, :class => ("mceEditor" if is_tiny_mce_editor) %>
+    <%= form.text_area attribute_key, :rows => dimensions[:height], :cols => dimensions[:width], :class => ("mceEditor" if is_tiny_mce_editor) %>
   <% end -%>
 
   <% if request.xhr? && is_tiny_mce_editor && !@tiny_mce_editor_initialized %>
