@@ -1,5 +1,11 @@
 en:
   translations:
+    form:
+      instructions: "<h3>Translate this page:</h3>
+      <ol>
+      <li>Replace the original text on the right-hand side with your translation.</li>
+      <li>Click 'Create' at the bottom of the page to save.</li>
+      </ol>"
     available_in: "Available in:"
     old: "Old"
     are_you_sure_for_item_edit: "Are you sure you would like to edit this item?\n\nIf you would like to edit the item's translation, please use the 'edit' link by the translation's language name instead."

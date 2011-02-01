@@ -1,6 +1,8 @@
 <% translatable = @translatable.present? ? @translatable : @translated
    translatable_attributes = translatable.translatable_attributes -%>
 
+<%= I18n.t('translations.form.instructions') if @translation.new_record? -%>
+
 <h2 style="margin:0 0 10px 0;">
   <%= I18n.t('translations.form.translate_from_and_to',
              :from => TranslationsHelper::available_locales[translatable.original_locale],
