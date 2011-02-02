@@ -128,6 +128,8 @@ TranslationsController.class_eval do
         resulting_part = cache_name_for(part, 'private')
         expire_fragment_for_all_versions_and_locale(item, { :controller => controller, :action => 'show', :id => item, :part => resulting_part })
       end
+    elsif @translatable.is_a?(Feed)
+      @translable.clear_caches
     else
       expire_all_locale_caches
     end
