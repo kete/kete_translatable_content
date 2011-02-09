@@ -4,8 +4,13 @@
 module TinymceControllerValidActionOverride
   unless included_modules.include? TinymceControllerValidActionOverride
     def self.included(klass)
-      all_valid_tinymce_actions = VALID_TINYMCE_ACTIONS + ['show']
-      klass.send :uses_tiny_mce, :only => all_valid_tinymce_actions
+      def add_show_as_uses_tiny_mce
+        instance_variable_set(:@uses_tiny_mce, true)
+      end
+
+      private :add_show_as_uses_tiny_mce
+
+      klass.send :before_filter, :add_show_as_uses_tiny_mce, :only => [:show]
     end
   end
 end
