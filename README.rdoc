@@ -75,6 +75,10 @@ $ script/backgroundrb start
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request.
 
+== Thank you
+
+Thanks go to Te Reo o Taranaki, Auckland City Libraries, and New Zealand Chinese Association Auckland Branch for funding the work for this project.
+
 == Copyright
 
 Copyright (c) 2010 Horowhenua Library Trust. See LICENSE for details.
