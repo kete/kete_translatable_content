@@ -1,7 +1,7 @@
 <div class="form-element">
   <label><%=t 'baskets.appearance.additional_footer_content' %></label>
   <fieldset>
-   <% if  current_value_of('additional_footer_content') 
+   <% if current_value_of('additional_footer_content').present?
       footer_setting = @basket._configurable_settings.find_by_name('additional_footer_content')
       -%>
         <div class="translations-controls">
